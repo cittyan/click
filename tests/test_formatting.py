@@ -30,7 +30,7 @@ def test_basic_functionality(runner):
     result = runner.invoke(cli, ["--help"], terminal_width=60)
     assert not result.exception
     assert result.output.splitlines() == [
-        "Usage: cli [OPTIONS]",
+        "用法: cli [选项]",
         "",
         "  First paragraph.",
         "",
@@ -76,7 +76,7 @@ def test_wrapping_long_options_strings(runner):
     result = runner.invoke(cli, ["a-very-long", "command", "--help"], terminal_width=54)
     assert not result.exception
     assert result.output.splitlines() == [
-        "Usage: cli a-very-long command [OPTIONS] FIRST SECOND",
+        "用法: cli a-very-long command [选项] FIRST SECOND",
         "                               THIRD FOURTH FIFTH",
         "                               SIXTH",
         "",
@@ -111,8 +111,8 @@ def test_wrapping_long_command_name(runner):
     )
     assert not result.exception
     assert result.output.splitlines() == [
-        "Usage: cli a-very-very-very-long command ",
-        "           [OPTIONS] FIRST SECOND THIRD FOURTH FIFTH",
+        "用法: cli a-very-very-very-long command ",
+        "           [选项] FIRST SECOND THIRD FOURTH FIFTH",
         "           SIXTH",
         "",
         "  A command.",
@@ -306,8 +306,8 @@ def test_formatting_usage_error_help_hint(
     result = runner.invoke(cli, ["foo"])
     assert result.exit_code == 2
     lines = result.output.splitlines()
-    assert lines[0] == "Usage: cli foo [OPTIONS] REQUIRED_ARG"
-    assert lines[-1] == "Error: Missing argument 'REQUIRED_ARG'."
+    assert lines[0] == "用法: cli foo [选项] REQUIRED_ARG"
+    assert lines[-1] == "错误: 缺少参数 'REQUIRED_ARG'."
     if expected_hint is not None:
         assert expected_hint in lines
     else:
@@ -328,7 +328,7 @@ def test_formatting_custom_type_metavar(runner):
     result = runner.invoke(cmd, "--help")
     assert not result.exception
     assert result.output.splitlines() == [
-        "Usage: foo [OPTIONS] MY_TYPE",
+        "用法: foo [选项] MY_TYPE",
         "",
         "Options:",
         "  --help  Show this message and exit.",
@@ -352,7 +352,7 @@ def test_truncating_docstring(runner):
     result = runner.invoke(cli, ["--help"], terminal_width=60)
     assert not result.exception
     assert result.output.splitlines() == [
-        "Usage: cli [OPTIONS]",
+        "用法: cli [选项]",
         "",
         "  First paragraph.",
         "",
@@ -377,7 +377,7 @@ def test_truncating_docstring_no_help(runner):
     result = runner.invoke(cli, ["--help"], terminal_width=60)
     assert not result.exception
     assert result.output.splitlines() == [
-        "Usage: cli [OPTIONS]",
+        "用法: cli [选项]",
         "",
         "Options:",
         "  --help  Show this message and exit.",
@@ -412,7 +412,7 @@ def test_global_show_default(runner):
     result = runner.invoke(cli, ["--help"])
     # the default to "--help" is not shown because it is False
     assert result.output.splitlines() == [
-        "Usage: cli [OPTIONS]",
+        "用法: cli [选项]",
         "",
         "Options:",
         "  -f TEXT  Output file name  [default: out.txt]",
@@ -423,7 +423,7 @@ def test_global_show_default(runner):
 def test_formatting_with_options_metavar_empty(runner):
     cli = click.Command("cli", options_metavar="", params=[click.Argument(["var"])])
     result = runner.invoke(cli, ["--help"])
-    assert "Usage: cli VAR\n" in result.output
+    assert "用法: cli VAR\n" in result.output
 
 
 def test_help_formatter_write_text():
@@ -513,7 +513,7 @@ def test_write_usage_styled_prefix_keeps_options_on_one_line():
             "Program",
             "",
             None,
-            "Usage: Program\n",
+            "用法: Program\n",
             id="empty-args-default-prefix",
         ),
         # A caller-supplied prefix is preserved verbatim.
@@ -533,7 +533,7 @@ def test_write_usage_styled_prefix_keeps_options_on_one_line():
             "Program",
             "",
             None,
-            "Usage: Program\n",
+            "用法: Program\n",
             id="empty-args-indented",
         ),
         # Prog too long to share a line with args: the wrap branch must not
@@ -544,7 +544,7 @@ def test_write_usage_styled_prefix_keeps_options_on_one_line():
             "VeryLongProgramName",
             "",
             None,
-            "Usage: VeryLongProgramName\n",
+            "用法: VeryLongProgramName\n",
             id="empty-args-long-prog",
         ),
         # With non-empty args, the separator space between prog and args is preserved.
@@ -554,7 +554,7 @@ def test_write_usage_styled_prefix_keeps_options_on_one_line():
             "Program",
             "[OPTIONS]",
             None,
-            "Usage: Program [OPTIONS]\n",
+            "用法: Program [OPTIONS]\n",
             id="with-args-default-prefix",
         ),
     ],
@@ -594,14 +594,14 @@ def test_help_formatter_write_usage_without_args_styled_prefix():
         # no parameters used to render a blank usage line.
         pytest.param(
             {"options_metavar": ""},
-            "Usage: cli",
+            "用法: cli",
             id="empty-options-metavar-no-params",
         ),
         # End-to-end regression: ``options_metavar=None`` is the documented
         # way to suppress the ``[OPTIONS]`` slot entirely.
         pytest.param(
             {"options_metavar": None},
-            "Usage: cli",
+            "用法: cli",
             id="none-options-metavar-no-params",
         ),
     ],

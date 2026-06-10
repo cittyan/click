@@ -156,7 +156,7 @@ class LazyFile:
     def __repr__(self) -> str:
         if self._f is not None:
             return repr(self._f)
-        return f"<unopened file '{format_filename(self.name)}' {self.mode}>"
+        return f"<未打开的文件 '{format_filename(self.name)}' {self.mode}>"
 
     def open(self) -> t.IO[t.Any]:
         """Opens the file if it's not yet open.  This call might fail with

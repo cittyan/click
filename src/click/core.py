@@ -57,11 +57,10 @@ V = t.TypeVar("V")
 def _complete_visible_commands(
     ctx: Context, incomplete: str
 ) -> cabc.Iterator[tuple[str, Command]]:
-    """List all the subcommands of a group that start with the
-    incomplete value and aren't hidden.
+    """列出以不完整值开头且未被隐藏的该组的所有子命令
 
-    :param ctx: Invocation context for the group.
-    :param incomplete: Value being completed. May be empty.
+    :param ctx: 组的调用上下文
+    :param incomplete: 正在补全的值。可能为空
     """
     multi = t.cast(Group, ctx.command)
 
@@ -81,29 +80,28 @@ def _check_nested_chain(
 
     if register:
         message = (
-            f"It is not possible to add the group {cmd_name!r} to another"
-            f" group {base_command.name!r} that is in chain mode."
+            f"无法将组 {cmd_name!r} 添加到处于链式模式的另一个组 {base_command.name!r} 中"
         )
     else:
         message = (
-            f"Found the group {cmd_name!r} as subcommand to another group "
-            f" {base_command.name!r} that is in chain mode. This is not supported."
+            f"发现组 {cmd_name!r} 作为另一个组 {base_command.name!r} 的子命令，而该组处于链式模式。此操作不受支持！"
         )
 
     raise RuntimeError(message)
 
 
 def _format_deprecated_label(deprecated: bool | str) -> str:
-    """Return the parenthesized deprecation label shown in help text."""
-    label = _("deprecated").upper()
+    """返回帮助文本中显示的括号化弃用标签"""
+    # label = _("deprecated").upper()
+    label = "已弃用"
     if isinstance(deprecated, str):
         return f"({label}: {deprecated})"
     return f"({label})"
 
 
 def _format_deprecated_suffix(deprecated: bool | str) -> str:
-    """Return the trailing reason for a ``DeprecationWarning`` message,
-    prefixed with a space, or an empty string when no reason was given.
+    """返回一个 ``DeprecationWarning`` 消息的尾部原因，前面加上一个空格。
+    如果没有给出原因，则返回空字符串。
     """
     if isinstance(deprecated, str):
         return f" {deprecated}"
@@ -118,7 +116,7 @@ def batch(iterable: cabc.Iterable[V], batch_size: int) -> list[tuple[V, ...]]:
 def augment_usage_errors(
     ctx: Context, param: Parameter | None = None
 ) -> cabc.Iterator[None]:
-    """Context manager that attaches extra information to exceptions."""
+    """上下文管理器，用于将额外信息附加到异常上"""
     try:
         yield
     except BadParameter as e:
@@ -137,15 +135,13 @@ def iter_params_for_processing(
     invocation_order: cabc.Sequence[Parameter],
     declaration_order: cabc.Sequence[Parameter],
 ) -> list[Parameter]:
-    """Returns all declared parameters in the order they should be processed.
+    """按应处理的顺序返回所有已声明的参数。
 
-    The declared parameters are re-shuffled depending on the order in which
-    they were invoked, as well as the eagerness of each parameters.
+    已声明的参数会根据调用顺序以及每个参数的“急切性”（eagerness）重新排列。
 
-    The invocation order takes precedence over the declaration order. I.e. the
-    order in which the user provided them to the CLI is respected.
+    调用顺序优先于声明顺序。也就是说，用户向 CLI 提供参数的顺序将被保留。
 
-    This behavior and its effect on callback evaluation is detailed at:
+    此行为及其对回调函数评估的影响详见：
     https://click.palletsprojects.com/en/stable/advanced/#callback-evaluation-order
     """
 
@@ -161,14 +157,12 @@ def iter_params_for_processing(
 
 
 class ParameterSource(enum.IntEnum):
-    """This is an :class:`~enum.IntEnum` that indicates the source of a
-    parameter's value.
+    """这是一个 `:class:`~enum.IntEnum`，用于指示参数值的来源。
 
-    Use :meth:`click.Context.get_parameter_source` to get the
-    source for a parameter by name.
+    使用 :meth:`click.Context.get_parameter_source` 方法可以通过参数名称获取其来源。
 
-    Members are ordered from most explicit to least explicit source.
-    This allows comparison to check if a value was explicitly provided:
+    成员按从最显式到最不显式的来源顺序排列。
+    这允许进行比较以检查值是否被显式提供：
 
     .. code-block:: python
 
@@ -188,15 +182,15 @@ class ParameterSource(enum.IntEnum):
     """
 
     PROMPT = enum.auto()
-    """Used a prompt to confirm a default or provide a value."""
+    """使用提示来确认默认值或提供值"""
     COMMANDLINE = enum.auto()
-    """The value was provided by the command line args."""
+    """该值由命令行参数提供"""
     ENVIRONMENT = enum.auto()
-    """The value was provided with an environment variable."""
+    """该值通过环境变量提供"""
     DEFAULT_MAP = enum.auto()
-    """Used a default provided by :attr:`Context.default_map`."""
+    """使用了 :attr:`Context.default_map` 提供的默认值"""
     DEFAULT = enum.auto()
-    """Used the default specified by the parameter."""
+    """使用了参数指定的默认值"""
 
 
 class Context:
@@ -484,8 +478,7 @@ class Context:
         import warnings
 
         warnings.warn(
-            "'protected_args' is deprecated and will be removed in Click 9.0."
-            " 'args' will contain remaining unparsed tokens.",
+            "'protected_args' 已被弃用，并将在 Click 9.0 中移除。'args' 将包含其余未解析的标记。",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -887,7 +880,7 @@ class Context:
         """
         # Can only forward to other commands, not direct callbacks.
         if not isinstance(cmd, Command):
-            raise TypeError("Callback is not a command.")
+            raise TypeError("回调不是一条命令")
 
         for param in self.params:
             if param not in kwargs:
@@ -994,7 +987,7 @@ class Command:
         help: str | None = None,
         epilog: str | None = None,
         short_help: str | None = None,
-        options_metavar: str | None = "[OPTIONS]",
+        options_metavar: str | None = "[选项]",
         add_help_option: bool = True,
         no_args_is_help: bool = False,
         hidden: bool = False,
@@ -1069,8 +1062,7 @@ class Command:
             for duplicate_opt in duplicate_opts:
                 warnings.warn(
                     (
-                        f"The parameter {duplicate_opt} is used more than once. "
-                        "Remove its duplicate as parameters should be unique."
+                        f"参数 {duplicate_opt} 被使用了多次。请删除其重复项，因为参数应保持唯一性。"
                     ),
                     stacklevel=3,
                 )
@@ -1198,7 +1190,7 @@ class Command:
                 formatter.write_text(text)
 
     def format_options(self, ctx: Context, formatter: HelpFormatter) -> None:
-        """Writes all the options into the formatter if they exist."""
+        """将所有选项写入格式化器（如果它们存在）中"""
         opts = []
         for param in self.get_params(ctx):
             rv = param.get_help_record(ctx)
@@ -1281,8 +1273,8 @@ class Command:
         if args and not ctx.allow_extra_args and not ctx.resilient_parsing:
             ctx.fail(
                 ngettext(
-                    "Got unexpected extra argument ({args})",
-                    "Got unexpected extra arguments ({args})",
+                    "遇到意外的额外参数 ({args})",
+                    "遇到意外的额外参数 ({args})",
                     len(args),
                 ).format(args=" ".join(map(str, args)))
             )
@@ -1297,7 +1289,7 @@ class Command:
         """
         if self.deprecated:
             message = _(
-                "DeprecationWarning: The command {name!r} is deprecated.{extra_message}"
+                "弃用警告: 命令 {name!r} 已被弃用。{extra_message}"
             ).format(
                 name=self.name,
                 extra_message=_format_deprecated_suffix(self.deprecated),
@@ -1484,7 +1476,7 @@ class Command:
         except Abort:
             if not standalone_mode:
                 raise
-            echo(_("Aborted!"), file=sys.stderr)
+            echo(_("中止!"), file=sys.stderr)
             sys.exit(1)
 
     def _main_shell_completion(
@@ -1520,7 +1512,7 @@ class Command:
         sys.exit(rv)
 
     def __call__(self, *args: t.Any, **kwargs: t.Any) -> t.Any:
-        """Alias for :meth:`main`."""
+        """:meth:`main` 的别名"""
         return self.main(*args, **kwargs)
 
 
@@ -1623,9 +1615,9 @@ class Group(Command):
 
         if subcommand_metavar is None:
             if chain:
-                subcommand_metavar = "COMMAND1 [ARGS]... [COMMAND2 [ARGS]...]..."
+                subcommand_metavar = "命令1 [参数]... [命令2 [参数]...]..."
             else:
-                subcommand_metavar = "COMMAND [ARGS]..."
+                subcommand_metavar = "命令 [参数]..."
 
         self.subcommand_metavar = subcommand_metavar
         self.chain = chain
@@ -1637,7 +1629,7 @@ class Group(Command):
             for param in self.params:
                 if isinstance(param, Argument) and not param.required:
                     raise RuntimeError(
-                        "A group in chain mode cannot have optional arguments."
+                        "链式模式中的一组不能包含可选参数"
                     )
 
     def to_info_dict(self, ctx: Context) -> dict[str, t.Any]:
@@ -1664,7 +1656,7 @@ class Group(Command):
         """
         name = name or cmd.name
         if name is None:
-            raise TypeError("Command has no name.")
+            raise TypeError("命令没有名称")
         _check_nested_chain(self, name, cmd, register=True)
         self.commands[name] = cmd
 
@@ -1699,7 +1691,7 @@ class Group(Command):
 
         if args and callable(args[0]):
             assert len(args) == 1 and not kwargs, (
-                "Use 'command(**kwargs)(callable)' to provide arguments."
+                "使用 'command(**kwargs)(callable)' 提供参数"
             )
             (func,) = args
             args = ()
@@ -1748,7 +1740,7 @@ class Group(Command):
 
         if args and callable(args[0]):
             assert len(args) == 1 and not kwargs, (
-                "Use 'group(**kwargs)(callable)' to provide arguments."
+                "使用 'group(**kwargs)(callable)' 提供参数"
             )
             (func,) = args
             args = ()
@@ -1858,7 +1850,7 @@ class Group(Command):
                 rows.append((subcommand, help))
 
             if rows:
-                with formatter.section(_("Commands")):
+                with formatter.section(_("命令")):
                     formatter.write_dl(rows)
 
     def parse_args(self, ctx: Context, args: list[str]) -> list[str]:
@@ -1889,7 +1881,7 @@ class Group(Command):
                 with ctx:
                     rv = super().invoke(ctx)
                     return _process_result([] if self.chain else rv)
-            ctx.fail(_("Missing command."))
+            ctx.fail(_("缺少命令"))
 
         # Fetch args back out
         args = [*ctx._protected_args, *ctx.args]
@@ -2023,7 +2015,7 @@ class CommandCollection(Group):
         self.sources: list[Group] = sources or []
 
     def add_source(self, group: Group) -> None:
-        """Add a group as a source of commands."""
+        """将一个组添加为命令的来源"""
         self.sources.append(group)
 
     def get_command(self, ctx: Context, cmd_name: str) -> Command | None:
@@ -2221,15 +2213,13 @@ class Parameter(ABC):
         if __debug__:
             if self.type.is_composite and nargs != self.type.arity:
                 raise ValueError(
-                    f"'nargs' must be {self.type.arity} (or None) for"
-                    f" type {self.type!r}, but it was {nargs}."
+                    f"对于类型 {self.type!r}，'nargs' 必须为 {self.type.arity}(或 None)，但实际为 {nargs}。"
                 )
 
             if required and deprecated:
                 raise ValueError(
-                    f"The {self.param_type_name} '{self.human_readable_name}' "
-                    "is deprecated and still required. A deprecated "
-                    f"{self.param_type_name} cannot be required."
+                    f"{self.param_type_name} '{self.human_readable_name}' 已被弃用，但仍需保留。"
+                    f"被弃用的 {self.param_type_name} 不能再被要求使用。"
                 )
 
     def to_info_dict(self) -> dict[str, t.Any]:
@@ -2401,7 +2391,7 @@ class Parameter(ABC):
                 # the parser should construct an iterable when parsing
                 # the command line.
                 raise BadParameter(
-                    _("Value must be an iterable."), ctx=ctx, param=self
+                    _("值必须是一个可迭代对象"), ctx=ctx, param=self
                 ) from None
 
         # Define the conversion function based on nargs and type.
@@ -2424,8 +2414,8 @@ class Parameter(ABC):
                 if len(value) != self.nargs:
                     raise BadParameter(
                         ngettext(
-                            "Takes {nargs} values but 1 was given.",
-                            "Takes {nargs} values but {len} were given.",
+                            "需要 {nargs} 个值，但只提供了 1 个",
+                            "需要 {nargs} 个值，但提供了 {len} 个",
                             len(value),
                         ).format(nargs=self.nargs, len=len(value)),
                         ctx=ctx,
@@ -2621,8 +2611,7 @@ class Parameter(ABC):
                 and source < ParameterSource.DEFAULT_MAP
             ):
                 message = _(
-                    "DeprecationWarning: The {param_type} {name!r} is deprecated."
-                    "{extra_message}"
+                    "弃用警告: {param_type} {name!r} 已被弃用。{extra_message}"
                 ).format(
                     param_type=self.param_type_name,
                     name=self.human_readable_name,
@@ -2816,7 +2805,7 @@ class Option(Parameter):
 
         if prompt is True:
             if not self.name:
-                raise TypeError("'name' is required with 'prompt=True'.")
+                raise TypeError("'name' 在 'prompt=True' 的情况下是必需的")
 
             prompt_text: str | None = self.name.replace("_", " ").capitalize()
         elif prompt is False:
@@ -2933,25 +2922,25 @@ class Option(Parameter):
 
         if __debug__:
             if deprecated and prompt:
-                raise ValueError("`deprecated` options cannot use `prompt`.")
+                raise ValueError("`deprecated` 选项不能使用 `prompt`")
 
             if self.nargs == -1:
-                raise TypeError("nargs=-1 is not supported for options.")
+                raise TypeError("不支持为选项设置 nargs=-1")
 
             if not self.is_bool_flag and self.secondary_opts:
-                raise TypeError("Secondary flag is not valid for non-boolean flag.")
+                raise TypeError("次级标志对非布尔标志无效")
 
             if self.is_bool_flag and self.hide_input and self.prompt is not None:
                 raise TypeError(
-                    "'prompt' with 'hide_input' is not valid for boolean flag."
+                    "带有 'hide_input' 的 'prompt' 对于布尔标志无效"
                 )
 
             if self.count:
                 if self.multiple:
-                    raise TypeError("'count' is not valid with 'multiple'.")
+                    raise TypeError("'count' 不能与 'multiple' 一起使用")
 
                 if self.is_flag:
-                    raise TypeError("'count' is not valid with 'is_flag'.")
+                    raise TypeError("'count' 不能与 'is_flag' 一起使用")
 
     def to_info_dict(self) -> dict[str, t.Any]:
         """
@@ -3022,7 +3011,7 @@ class Option(Parameter):
         for decl in decls:
             if decl.isidentifier():
                 if name is not None:
-                    raise TypeError(_("Name '{name}' defined twice").format(name=name))
+                    raise TypeError(_("名称 '{name}' 定义了两次").format(name=name))
                 name = decl
             else:
                 split_char = ";" if decl[:1] == "/" else "/"
@@ -3038,8 +3027,7 @@ class Option(Parameter):
                     if first == second:
                         raise ValueError(
                             _(
-                                "Boolean option {decl!r} cannot use the"
-                                " same flag for true/false."
+                                "布尔选项 {decl!r} 不能使用相同的标志来表示真/假"
                             ).format(decl=decl)
                         )
                 else:
@@ -3057,16 +3045,15 @@ class Option(Parameter):
                 return "", opts, secondary_opts
             raise TypeError(
                 _(
-                    "Could not determine name for option with declarations {decls!r}"
+                    "无法为声明为 {decls!r} 的选项确定名称"
                 ).format(decls=decls)
             )
 
         if not opts and not secondary_opts:
             raise TypeError(
                 _(
-                    "No options defined but a name was passed ({name})."
-                    " Did you mean to declare an argument instead? Did"
-                    " you mean to pass '--{name}'?"
+                    "未定义选项，但传入了名称 ({name})。"
+                    "您是否本意是声明一个参数？您是否本意是传入 '--{name}'？"
                 ).format(name=name)
             )
 
@@ -3463,7 +3450,7 @@ class Argument(Parameter):
                 required = False
 
         if "multiple" in attrs:
-            raise TypeError("__init__() got an unexpected keyword argument 'multiple'.")
+            raise TypeError("__init__() 接收到了一个意外的关键字参数 'multiple'")
 
         super().__init__(param_decls, required=required, **attrs)
 
@@ -3493,15 +3480,14 @@ class Argument(Parameter):
         if not decls:
             if not expose_value:
                 return "", [], []
-            raise TypeError("Argument is marked as exposed, but does not have a name.")
+            raise TypeError("参数被标记为已暴露，但没有名称")
         if len(decls) == 1:
             name = arg = decls[0]
             name = name.replace("-", "_").lower()
         else:
             raise TypeError(
                 _(
-                    "Arguments take exactly one parameter declaration, got"
-                    " {length}: {decls}."
+                    "参数声明必须恰好包含一个参数，但实际获取了 {length}: {decls}"
                 ).format(length=len(decls), decls=decls)
             )
         return name, [arg], []
@@ -3523,8 +3509,7 @@ def __getattr__(name: str) -> object:
 
     if name == "BaseCommand":
         warnings.warn(
-            "'BaseCommand' is deprecated and will be removed in Click 9.0. Use"
-            " 'Command' instead.",
+            "'BaseCommand' 已弃用，并将在 Click 9.0 中移除。请改用 'Command'",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -3532,8 +3517,7 @@ def __getattr__(name: str) -> object:
 
     if name == "MultiCommand":
         warnings.warn(
-            "'MultiCommand' is deprecated and will be removed in Click 9.0. Use"
-            " 'Group' instead.",
+            "'MultiCommand' 已弃用，并将在 Click 9.0 中移除。请改用 'Group'",
             DeprecationWarning,
             stacklevel=2,
         )

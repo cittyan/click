@@ -91,7 +91,7 @@ class _FDCapture:
         os.dup2(self._tmpfile.fileno(), self._targetfd)
 
     def stop(self) -> bytes:
-        assert self._tmpfile is not None, "_FDCapture.start() was not called"
+        assert self._tmpfile is not None, "_FDCapture.start() 未被调用"
         os.dup2(self.saved_fd, self._targetfd)
         os.close(self.saved_fd)
         self.saved_fd = -1
@@ -196,7 +196,7 @@ def make_input_stream(
         if rv is not None:
             return rv
 
-        raise TypeError("Could not find binary reader for input stream.")
+        raise TypeError("无法找到输入流的二进制读取器")
 
     if input is None:
         input = b""
@@ -331,11 +331,11 @@ class CliRunner:
     ) -> None:
         if capture not in {"sys", "fd"}:
             raise ValueError(
-                f"capture={capture!r} is not valid. Choose from 'sys' or 'fd'."
+                f"capture={capture!r} 无效，请选择 'sys' 或 'fd'"
             )
         if capture == "fd" and sys.platform == "win32":
             raise ValueError(
-                f"capture={capture!r} is not supported on Windows. Use 'sys'."
+                f"capture={capture!r} 在 Windows 平台不支持，请使用 'sys'"
             )
         self.charset = charset
         self.env: cabc.Mapping[str, str | None] = env or {}

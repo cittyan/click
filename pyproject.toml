@@ -1,7 +1,7 @@
 [project]
 name = "click"
 version = "8.4.1"
-description = "Composable command line interface toolkit"
+description = "可组合命令行界面工具包"
 readme = "README.md"
 license = "BSD-3-Clause"
 license-files = ["LICENSE.txt"]

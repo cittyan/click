@@ -516,7 +516,7 @@ def test_no_state_leaks(runner):
     assert logger.getEffectiveLevel() == logging.WARNING
 
     assert not result.exception
-    assert result.output.startswith("Usage: messing-with-logger [OPTIONS]")
+    assert result.output.startswith("用法: messing-with-logger [选项]")
 
 
 def test_with_resource():

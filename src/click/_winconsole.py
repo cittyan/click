@@ -135,7 +135,7 @@ class _WindowsConsoleReader(_WindowsConsoleRawIOBase):
             return 0
         elif bytes_to_be_read % 2:
             raise ValueError(
-                "cannot read odd number of bytes from UTF-16-LE encoded console"
+                "无法从 UTF-16-LE 编码的控制台读取奇数个字节"
             )
 
         buffer = get_buffer(b, writable=True)
@@ -153,7 +153,7 @@ class _WindowsConsoleReader(_WindowsConsoleRawIOBase):
             # wait for KeyboardInterrupt
             time.sleep(0.1)
         if not rv:
-            raise OSError(_("Windows error: {error}").format(error=GetLastError()))
+            raise OSError(_("Windows 错误: {error}").format(error=GetLastError()))
 
         if buffer[0] == EOF:
             return 0
@@ -170,7 +170,7 @@ class _WindowsConsoleWriter(_WindowsConsoleRawIOBase):
             return "ERROR_SUCCESS"
         elif errno == ERROR_NOT_ENOUGH_MEMORY:
             return "ERROR_NOT_ENOUGH_MEMORY"
-        return _("Windows error: {error}").format(error=errno)
+        return _("Windows 错误: {error}").format(error=errno)
 
     def write(self, b: Buffer) -> int:
         bytes_to_be_written = len(b)

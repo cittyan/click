@@ -80,14 +80,14 @@ class TextWrapper(textwrap.TextWrapper):
         """
         lines: list[str] = []
         if self.width <= 0:
-            raise ValueError(f"invalid width {self.width!r} (must be > 0)")
+            raise ValueError(f"无效宽度 {self.width!r} (必须 > 0)")
         if self.max_lines is not None:
             if self.max_lines > 1:
                 indent = self.subsequent_indent
             else:
                 indent = self.initial_indent
             if term_len(indent) + term_len(self.placeholder.lstrip()) > self.width:
-                raise ValueError("placeholder too large for max width")
+                raise ValueError("占位符过大，超出最大宽度")
 
         chunks.reverse()
 

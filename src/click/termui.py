@@ -209,7 +209,7 @@ def prompt(
 
     if confirmation_prompt:
         if confirmation_prompt is True:
-            confirmation_prompt = _("Repeat for confirmation")
+            confirmation_prompt = _("重复以确认")
 
         confirmation_prompt = _build_prompt(confirmation_prompt, prompt_suffix)
 
@@ -225,7 +225,7 @@ def prompt(
             result = value_proc(value)
         except UsageError as e:
             message = _mask_hidden_input(e.message, value) if hide_input else e.message
-            echo(_("Error: {message}").format(message=message), err=err)
+            echo(_("错误: {message}").format(message=message), err=err)
             continue
         if not confirmation_prompt:
             return result
@@ -236,7 +236,7 @@ def prompt(
                 break
         if value == value2:
             return result
-        echo(_("Error: The two entered values do not match."), err=err)
+        echo(_("错误: 输入的两个值不匹配"), err=err)
 
 
 def confirm(
@@ -290,7 +290,7 @@ def confirm(
         elif default is not None and value == "":
             rv = default
         else:
-            echo(_("Error: invalid input"), err=err)
+            echo(_("错误: 无效输入"), err=err)
             continue
         break
     if abort and not rv:
@@ -672,13 +672,13 @@ def style(
         try:
             bits.append(f"\033[{_interpret_color(fg)}m")
         except KeyError:
-            raise TypeError(_("Unknown color {colour!r}").format(colour=fg)) from None
+            raise TypeError(_("未知颜色值 {colour!r}").format(colour=fg)) from None
 
     if bg:
         try:
             bits.append(f"\033[{_interpret_color(bg, 10)}m")
         except KeyError:
-            raise TypeError(_("Unknown color {colour!r}").format(colour=bg)) from None
+            raise TypeError(_("未知颜色值 {colour!r}").format(colour=bg)) from None
 
     if bold is not None:
         bits.append(f"\033[{1 if bold else 22}m")
@@ -927,7 +927,7 @@ def pause(info: str | None = None, err: bool = False) -> None:
         return
 
     if info is None:
-        info = _("Press any key to continue...")
+        info = _("按任意键继续...")
 
     try:
         if info:

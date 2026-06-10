@@ -81,8 +81,7 @@ def __getattr__(name: str) -> object:
         from .core import _BaseCommand
 
         warnings.warn(
-            "'BaseCommand' is deprecated and will be removed in Click 9.0. Use"
-            " 'Command' instead.",
+            "'BaseCommand' 已弃用，并将在 Click 9.0 中移除。请改用 'Command'",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -92,8 +91,7 @@ def __getattr__(name: str) -> object:
         from .core import _MultiCommand
 
         warnings.warn(
-            "'MultiCommand' is deprecated and will be removed in Click 9.0. Use"
-            " 'Group' instead.",
+            "'MultiCommand' 已弃用，并将在 Click 9.0 中移除。请改用 'Group'",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -103,8 +101,7 @@ def __getattr__(name: str) -> object:
         from .parser import _OptionParser
 
         warnings.warn(
-            "'OptionParser' is deprecated and will be removed in Click 9.0. The"
-            " old parser is available in 'optparse'.",
+            "'OptionParser' 已被弃用，并将在 Click 9.0 中移除。旧版解析器可在 'optparse' 中使用",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -115,9 +112,7 @@ def __getattr__(name: str) -> object:
         import warnings
 
         warnings.warn(
-            "The '__version__' attribute is deprecated and will be removed in"
-            " Click 9.1. Use feature detection or"
-            " 'importlib.metadata.version(\"click\")' instead.",
+            "'__version__' 属性已被弃用，并将在 Click 9.1 中移除。请改用功能检测或 'importlib.metadata.version(\"click\")'",
             DeprecationWarning,
             stacklevel=2,
         )

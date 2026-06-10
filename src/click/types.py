@@ -361,7 +361,7 @@ class Choice(ParamType[ParamTypeValue], t.Generic[ParamTypeValue]):
 
         .. versionchanged:: 8.2.0 Added ``ctx`` argument.
         """
-        return _("Choose from:\n\t{choices}").format(
+        return _("可选值:\n\t{choices}").format(
             choices=",\n\t".join(self._normalized_mapping(ctx=ctx).values())
         )
 
@@ -398,8 +398,8 @@ class Choice(ParamType[ParamTypeValue], t.Generic[ParamTypeValue]):
         """
         choices_str = ", ".join(map(repr, self._normalized_mapping(ctx=ctx).values()))
         return ngettext(
-            "{value!r} is not {choice}.",
-            "{value!r} is not one of {choices}.",
+            "{value!r} 不是 {choice}",
+            "{value!r} 不是 {choices} 其中之一",
             len(self.choices),
         ).format(value=value, choice=choices_str, choices=choices_str)
 
@@ -490,8 +490,8 @@ class DateTime(ParamType[datetime]):
         formats_str = ", ".join(map(repr, self.formats))
         self.fail(
             ngettext(
-                "{value!r} does not match the format {format}.",
-                "{value!r} does not match the formats {formats}.",
+                "{value!r} 不符合格式 {format}",
+                "{value!r} 不符合格式 {formats}",
                 len(self.formats),
             ).format(value=value, format=formats_str, formats=formats_str),
             param,
@@ -512,7 +512,7 @@ class _NumberParamTypeBase(ParamType[ParamTypeValue]):
             return self._number_class(value)
         except ValueError:
             self.fail(
-                _("{value!r} is not a valid {number_type}.").format(
+                _("{value!r} 不是有效的 {number_type}").format(
                     value=value, number_type=self.name
                 ),
                 param,
@@ -577,7 +577,7 @@ class _NumberRangeBase(_NumberParamTypeBase[ParamTypeValue]):
 
         if lt_min or gt_max:
             self.fail(
-                _("{value} is not in the range {range}.").format(
+                _("{value} 不在 {range} 范围内").format(
                     value=rv, range=self._describe_range()
                 ),
                 param,
@@ -600,7 +600,7 @@ class _NumberRangeBase(_NumberParamTypeBase[ParamTypeValue]):
         ...
 
     def _describe_range(self) -> str:
-        """Describe the range for use in help text."""
+        """在帮助文本中描述使用范围"""
         if self.min is None:
             op = "<" if self.max_open else "<="
             return f"x{op}{self.max}"
@@ -689,7 +689,7 @@ class FloatRange(_NumberRangeBase[float], FloatParamType):
         )
 
         if (min_open or max_open) and clamp:
-            raise TypeError("Clamping is not supported for open bounds.")
+            raise TypeError("不支持对开区间进行截断")
 
     def _clamp(self, bound: float, dir: t.Literal[1, -1], open: bool) -> float:
         if not open:
@@ -698,7 +698,7 @@ class FloatRange(_NumberRangeBase[float], FloatParamType):
         # Could use math.nextafter here, but clamping an
         # open float range doesn't seem to be particularly useful. It's
         # left up to the user to write a callback to do it if needed.
-        raise RuntimeError("Clamping is not supported for open bounds.")
+        raise RuntimeError("不支持对开区间进行截断")
 
 
 class BoolParamType(ParamType[bool]):
@@ -759,7 +759,7 @@ class BoolParamType(ParamType[bool]):
         if normalized is None:
             self.fail(
                 _(
-                    "{value!r} is not a valid boolean. Recognized values: {states}"
+                    "{value!r} 不是一个有效的布尔值。可识别的值: {states}"
                 ).format(value=value, states=", ".join(sorted(self.bool_states))),
                 param,
                 ctx,
@@ -785,7 +785,7 @@ class UUIDParameterType(ParamType[uuid.UUID]):
             return uuid.UUID(value)
         except ValueError:
             self.fail(
-                _("{value!r} is not a valid UUID.").format(value=value), param, ctx
+                _("{value!r} 不是一个有效的 UUID").format(value=value), param, ctx
             )
 
     def __repr__(self) -> str:
@@ -1045,7 +1045,7 @@ class Path(ParamType[str | bytes | os.PathLike[str]]):
                 if not self.exists:
                     return self.coerce_path_result(rv)
                 self.fail(
-                    _("{name} {filename!r} does not exist.").format(
+                    _("{name} {filename!r} 不存在").format(
                         name=self.name.title(), filename=format_filename(value)
                     ),
                     param,
@@ -1054,7 +1054,7 @@ class Path(ParamType[str | bytes | os.PathLike[str]]):
 
             if not self.file_okay and stat.S_ISREG(st.st_mode):
                 self.fail(
-                    _("{name} {filename!r} is a file.").format(
+                    _("{name} {filename!r} 是一个文件").format(
                         name=self.name.title(), filename=format_filename(value)
                     ),
                     param,
@@ -1062,7 +1062,7 @@ class Path(ParamType[str | bytes | os.PathLike[str]]):
                 )
             if not self.dir_okay and stat.S_ISDIR(st.st_mode):
                 self.fail(
-                    _("{name} {filename!r} is a directory.").format(
+                    _("{name} {filename!r} 是一个目录").format(
                         name=self.name.title(), filename=format_filename(value)
                     ),
                     param,
@@ -1071,7 +1071,7 @@ class Path(ParamType[str | bytes | os.PathLike[str]]):
 
             if self.readable and not os.access(rv, os.R_OK):
                 self.fail(
-                    _("{name} {filename!r} is not readable.").format(
+                    _("{name} {filename!r} 不可读").format(
                         name=self.name.title(), filename=format_filename(value)
                     ),
                     param,
@@ -1080,7 +1080,7 @@ class Path(ParamType[str | bytes | os.PathLike[str]]):
 
             if self.writable and not os.access(rv, os.W_OK):
                 self.fail(
-                    _("{name} {filename!r} is not writable.").format(
+                    _("{name} {filename!r} 不可写").format(
                         name=self.name.title(), filename=format_filename(value)
                     ),
                     param,
@@ -1089,7 +1089,7 @@ class Path(ParamType[str | bytes | os.PathLike[str]]):
 
             if self.executable and not os.access(value, os.X_OK):
                 self.fail(
-                    _("{name} {filename!r} is not executable.").format(
+                    _("{name} {filename!r} 不可执行").format(
                         name=self.name.title(), filename=format_filename(value)
                     ),
                     param,
@@ -1161,8 +1161,8 @@ class Tuple(CompositeParamType[tuple[t.Any, ...]]):
         if len_value != len_type:
             self.fail(
                 ngettext(
-                    "{len_type} values are required, but {len_value} was given.",
-                    "{len_type} values are required, but {len_value} were given.",
+                    "需要 {len_type} 值，但提供了 {len_value}",
+                    "需要 {len_type} 值，但提供了 {len_value}",
                     len_value,
                 ).format(len_type=len_type, len_value=len_value),
                 param=param,
@@ -1260,7 +1260,7 @@ def convert_type(
         try:
             if issubclass(guessed, ParamType):
                 raise AssertionError(
-                    f"Attempted to use an uninstantiated parameter type ({guessed})."
+                    f"尝试使用未实例化的参数类型({guessed})"
                 )
         except TypeError:
             # guessed is an instance (correct), so issubclass fails.

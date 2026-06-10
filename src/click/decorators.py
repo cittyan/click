@@ -85,9 +85,7 @@ def make_pass_decorator(
 
             if obj is None:
                 raise RuntimeError(
-                    "Managed to invoke callback without a context"
-                    f" object of type {object_type.__name__!r}"
-                    " existing."
+                    "成功调用了回调函数，但不存在类型为 {object_type.__name__!r} 的上下文对象"
                 )
 
             return ctx.invoke(f, obj, *args, **kwargs)
@@ -121,11 +119,10 @@ def pass_meta_key(
         return update_wrapper(new_func, f)
 
     if doc_description is None:
-        doc_description = f"the {key!r} key from :attr:`click.Context.meta`"
+        doc_description = f"键值对 {key!r} 来自 :attr:`click.Context.meta`"
 
     decorator.__doc__ = (
-        f"Decorator that passes {doc_description} as the first argument"
-        " to the decorated function."
+        f"装饰器将 {doc_description} 作为第一个参数传递给被装饰的函数"
     )
     return decorator
 
@@ -208,15 +205,15 @@ def command(
     if callable(name):
         func = name
         name = None
-        assert cls is None, "Use 'command(cls=cls)(callable)' to specify a class."
-        assert not attrs, "Use 'command(**kwargs)(callable)' to provide arguments."
+        assert cls is None, "使用 'command(cls=cls)(callable)' 来指定一个类"
+        assert not attrs, "使用 'command(**kwargs)(callable)' 来提供参数"
 
     if cls is None:
         cls = t.cast("type[CmdType]", Command)
 
     def decorator(f: _AnyCallable) -> CmdType:
         if isinstance(f, Command):
-            raise TypeError("Attempted to convert a callback into a command twice.")
+            raise TypeError("尝试将回调函数转换为命令两次")
 
         attr_params = attrs.pop("params", None)
         params = attr_params if attr_params is not None else []
@@ -396,8 +393,8 @@ def confirmation_option(*param_decls: str, **kwargs: t.Any) -> t.Callable[[FC], 
     kwargs.setdefault("is_flag", True)
     kwargs.setdefault("callback", callback)
     kwargs.setdefault("expose_value", False)
-    kwargs.setdefault("prompt", _("Do you want to continue?"))
-    kwargs.setdefault("help", _("Confirm the action without prompting."))
+    kwargs.setdefault("prompt", _("你想继续吗？"))
+    kwargs.setdefault("help", _("确认操作，无需提示"))
     return option(*param_decls, **kwargs)
 
 
@@ -443,8 +440,7 @@ def version_option(
         value ``"--version"``.
     :param package_name: The package name to detect the version from. If
         not provided, Click will try to detect it.
-    :param prog_name: The name of the CLI to show in the message. If not
-        provided, it will be detected from the command.
+    :param prog_name: 消息中显示的命令行名称。如果未提供，将从命令中检测到该名称。
     :param message: The message to show. The values ``%(prog)s``,
         ``%(package)s``, and ``%(version)s`` are available. Defaults to
         ``"%(prog)s, version %(version)s"``.
@@ -498,13 +494,12 @@ def version_option(
                 version = importlib.metadata.version(package_name)
             except importlib.metadata.PackageNotFoundError:
                 raise RuntimeError(
-                    f"{package_name!r} is not installed. Try passing"
-                    " 'package_name' instead."
+                    f"{package_name!r} 未安装。请尝试传递 'package_name'"
                 ) from None
 
         if version is None:
             raise RuntimeError(
-                f"Could not determine the version for {package_name!r} automatically."
+                f"无法自动确认 {package_name!r} 的版本"
             )
 
         echo(
@@ -519,7 +514,7 @@ def version_option(
     kwargs.setdefault("is_flag", True)
     kwargs.setdefault("expose_value", False)
     kwargs.setdefault("is_eager", True)
-    kwargs.setdefault("help", _("Show the version and exit."))
+    kwargs.setdefault("help", _("显示版本并退出"))
     kwargs["callback"] = callback
     return option(*param_decls, **kwargs)
 
@@ -545,7 +540,7 @@ def help_option(*param_decls: str, **kwargs: t.Any) -> t.Callable[[FC], FC]:
     kwargs.setdefault("is_flag", True)
     kwargs.setdefault("expose_value", False)
     kwargs.setdefault("is_eager", True)
-    kwargs.setdefault("help", _("Show this message and exit."))
+    kwargs.setdefault("help", _("显示帮助信息并退出"))
     kwargs.setdefault("callback", show_help)
 
     return option(*param_decls, **kwargs)

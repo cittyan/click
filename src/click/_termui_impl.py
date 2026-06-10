@@ -108,7 +108,7 @@ class ProgressBar(t.Generic[V]):
                 length = None
         if iterable is None:
             if length is None:
-                raise TypeError("iterable or length is required")
+                raise TypeError("需要可迭代对象或长度参数")
             iterable = t.cast("cabc.Iterable[V]", range(length))
         self.iter: cabc.Iterable[V] = iter(iterable)
         self.length = length
@@ -140,7 +140,7 @@ class ProgressBar(t.Generic[V]):
 
     def __iter__(self) -> cabc.Iterator[V]:
         if not self.entered:
-            raise RuntimeError("You need to use progress bars in a with block.")
+            raise RuntimeError("你需要在 with 块中使用进度条")
         self.render_progress()
         return self.generator()
 
@@ -364,7 +364,7 @@ class ProgressBar(t.Generic[V]):
         # `self.generator()` repeatedly, and this must remain safe in
         # order for that interface to work.
         if not self.entered:
-            raise RuntimeError("You need to use progress bars in a with block.")
+            raise RuntimeError("你需要在 with 块中使用进度条")
 
         if not self._is_atty:
             yield from self.iter
@@ -690,11 +690,11 @@ class Editor:
             exit_code = c.wait()
             if exit_code != 0:
                 raise ClickException(
-                    _("{editor}: Editing failed").format(editor=editor)
+                    _("{editor}: 编辑失败").format(editor=editor)
                 )
         except OSError as e:
             raise ClickException(
-                _("{editor}: Editing failed: {e}").format(editor=editor, e=e)
+                _("{editor}: 编辑失败: {e}").format(editor=editor, e=e)
             ) from e
 
     @t.overload

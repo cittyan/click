@@ -37,7 +37,7 @@ def test_basic_chaining(runner):
 @pytest.mark.parametrize(
     ("args", "expect"),
     [
-        (["--help"], "COMMAND1 [ARGS]... [COMMAND2 [ARGS]...]..."),
+        (["--help"], "命令1 [参数]... [命令2 [参数]...]..."),
         (["--help"], "ROOT HELP"),
         (["sdist", "--help"], "SDIST HELP"),
         (["bdist", "--help"], "BDIST HELP"),

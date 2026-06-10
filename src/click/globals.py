@@ -36,7 +36,7 @@ def get_current_context(silent: bool = False) -> Context | None:
         return t.cast("Context", _local.stack[-1])
     except (AttributeError, IndexError) as e:
         if not silent:
-            raise RuntimeError("There is no active click context.") from e
+            raise RuntimeError("没有活动的 Click 上下文") from e
 
     return None
 

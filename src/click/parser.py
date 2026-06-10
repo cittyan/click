@@ -103,7 +103,7 @@ def _unpack_args(
     if spos is not None:
         rv[spos] = tuple(args)
         args = []
-        rv[spos + 1 :] = reversed(rv[spos + 1 :])
+        rv[spos + 1:] = reversed(rv[spos + 1:])
 
     return tuple(rv), list(args)
 
@@ -200,7 +200,7 @@ class _Argument:
                 value = UNSET
             elif holes != 0:
                 raise BadArgumentUsage(
-                    _("Argument {name!r} takes {nargs} values.").format(
+                    _("参数 {name!r} 接受 {nargs} 个值").format(
                         name=self.dest, nargs=self.nargs
                     )
                 )

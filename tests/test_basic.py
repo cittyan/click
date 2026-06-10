@@ -70,7 +70,7 @@ def test_basic_group(runner):
 
     result = runner.invoke(cli, ["--help"])
     assert not result.exception
-    assert "COMMAND [ARGS]..." in result.output
+    assert "命令 [参数]..." in result.output
     assert "This is the root" in result.output
     assert "This is a subcommand." in result.output
     assert result.exit_code == 0
@@ -112,7 +112,7 @@ def test_group_from_list(runner):
     [
         ([], "S:[no value]"),
         (["--s=42"], "S:[42]"),
-        (["--s"], "Error: Option '--s' requires an argument."),
+        (["--s"], "错误: Option '--s' requires an argument."),
         (["--s="], "S:[]"),
         (["--s=\N{SNOWMAN}"], "S:[\N{SNOWMAN}]"),
     ],
@@ -126,7 +126,7 @@ def test_string_option(runner, args, expect):
     result = runner.invoke(cli, args)
     assert expect in result.output
 
-    if expect.startswith("Error:"):
+    if expect.startswith("错误:"):
         assert result.exception is not None
     else:
         assert result.exception is None
@@ -137,7 +137,7 @@ def test_string_option(runner, args, expect):
     [
         ([], "I:[84]"),
         (["--i=23"], "I:[46]"),
-        (["--i=x"], "Error: Invalid value for '--i': 'x' is not a valid integer."),
+        (["--i=x"], "错误: '--i' 的值无效: 'x' 不是有效的 integer"),
     ],
 )
 def test_int_option(runner, args, expect):
@@ -149,7 +149,7 @@ def test_int_option(runner, args, expect):
     result = runner.invoke(cli, args)
     assert expect in result.output
 
-    if expect.startswith("Error:"):
+    if expect.startswith("错误:"):
         assert result.exception is not None
     else:
         assert result.exception is None
@@ -163,7 +163,7 @@ def test_int_option(runner, args, expect):
             ["--u=821592c1-c50e-4971-9cd6-e89dc6832f86"],
             "U:[821592c1-c50e-4971-9cd6-e89dc6832f86]",
         ),
-        (["--u=x"], "Error: Invalid value for '--u': 'x' is not a valid UUID."),
+        (["--u=x"], "错误: '--u' 的值无效: 'x' 不是一个有效的 UUID"),
     ],
 )
 def test_uuid_option(runner, args, expect):
@@ -177,7 +177,7 @@ def test_uuid_option(runner, args, expect):
     result = runner.invoke(cli, args)
     assert expect in result.output
 
-    if expect.startswith("Error:"):
+    if expect.startswith("错误:"):
         assert result.exception is not None
     else:
         assert result.exception is None
@@ -188,7 +188,7 @@ def test_uuid_option(runner, args, expect):
     [
         ([], "F:[42.0]"),
         ("--f=23.5", "F:[23.5]"),
-        ("--f=x", "Error: Invalid value for '--f': 'x' is not a valid float."),
+        ("--f=x", "错误: '--f' 的值无效: 'x' 不是有效的 float"),
     ],
 )
 def test_float_option(runner, args, expect):
@@ -200,7 +200,7 @@ def test_float_option(runner, args, expect):
     result = runner.invoke(cli, args)
     assert expect in result.output
 
-    if expect.startswith("Error:"):
+    if expect.startswith("错误:"):
         assert result.exception is not None
     else:
         assert result.exception is None
@@ -392,7 +392,7 @@ def test_file_lazy_mode(runner):
         os.mkdir("example.txt")
         result_in = runner.invoke(input_non_lazy, ["--file=example.txt"])
         assert result_in.exit_code == 2
-        assert "Invalid value for '--file': 'example.txt'" in result_in.output
+        assert "'--file' 的值无效: 'example.txt'" in result_in.output
 
 
 def test_path_option(runner):
@@ -412,7 +412,7 @@ def test_path_option(runner):
             assert f.read() == b"meh\n"
 
         result = runner.invoke(write_to_dir, ["-O", "test/foo.txt"])
-        assert "is a file" in result.output
+        assert "是一个文件" in result.output
 
     @click.command()
     @click.option("-f", type=click.Path(exists=True))
@@ -422,7 +422,7 @@ def test_path_option(runner):
 
     with runner.isolated_filesystem():
         result = runner.invoke(showtype, ["-f", "xxx"])
-        assert "does not exist" in result.output
+        assert "不存在" in result.output
 
         result = runner.invoke(showtype, ["-f", "."])
         assert "is_file=False" in result.output
@@ -454,7 +454,7 @@ def test_choice_option(runner):
     result = runner.invoke(cli, ["--method=meh"])
     assert result.exit_code == 2
     assert (
-        "Invalid value for '--method': 'meh' is not one of 'foo', 'bar', 'baz'."
+        "'--method' 的值无效: 'meh' 不是 'foo', 'bar', 'baz' 其中之一"
         in result.output
     )
 
@@ -475,8 +475,8 @@ def test_choice_argument(runner):
     result = runner.invoke(cli, ["meh"])
     assert result.exit_code == 2
     assert (
-        "Invalid value for '{foo|bar|baz}': 'meh' is not one of 'foo',"
-        " 'bar', 'baz'." in result.output
+        "'{foo|bar|baz}' 的值无效: 'meh' 不是 'foo',"
+        " 'bar', 'baz' 其中之一" in result.output
     )
 
     result = runner.invoke(cli, ["--help"])
@@ -502,8 +502,8 @@ def test_choice_argument_enum(runner):
     result = runner.invoke(cli, ["meh"])
     assert result.exit_code == 2
     assert (
-        "Invalid value for '{foo|bar|baz}': 'meh' is not one of 'foo',"
-        " 'bar', 'baz'." in result.output
+        "'{foo|bar|baz}' 的值无效: 'meh' 不是 'foo',"
+        " 'bar', 'baz' 其中之一" in result.output
     )
 
     result = runner.invoke(cli, ["--help"])
@@ -533,8 +533,8 @@ def test_choice_argument_custom_type(runner):
     result = runner.invoke(cli, ["meh"])
     assert result.exit_code == 2
     assert (
-        "Invalid value for '{foo|bar|baz}': 'meh' is not one of 'foo',"
-        " 'bar', 'baz'." in result.output
+        "'{foo|bar|baz}' 的值无效: 'meh' 不是 'foo',"
+        " 'bar', 'baz' 其中之一" in result.output
     )
 
     result = runner.invoke(cli, ["--help"])
@@ -561,12 +561,12 @@ def test_choice_argument_none(runner):
     result = runner.invoke(cli, [])
     assert result.exception
     assert (
-        "Error: Missing argument '{not-none|none}'. "
-        "Choose from:\n\tnot-none,\n\tnone\n" in result.stderr
+        "错误: 缺少参数 '{not-none|none}'. "
+        "可选值:\n\tnot-none,\n\tnone\n" in result.stderr
     )
 
     result = runner.invoke(cli, ["--help"])
-    assert result.output.startswith("Usage: cli [OPTIONS] {not-none|none}\n")
+    assert result.output.startswith("用法: cli [选项] {not-none|none}\n")
 
 
 def test_datetime_option_default(runner):
@@ -586,8 +586,8 @@ def test_datetime_option_default(runner):
     result = runner.invoke(cli, ["--start_date=2015-09"])
     assert result.exit_code == 2
     assert (
-        "Invalid value for '--start_date': '2015-09' does not match the formats"
-        " '%Y-%m-%d', '%Y-%m-%dT%H:%M:%S', '%Y-%m-%d %H:%M:%S'."
+        "'--start_date' 的值无效: '2015-09' 不符合格式"
+        " '%Y-%m-%d', '%Y-%m-%dT%H:%M:%S', '%Y-%m-%d %H:%M:%S'"
     ) in result.output
 
     result = runner.invoke(cli, ["--help"])
@@ -615,7 +615,7 @@ def test_required_option(runner):
 
     result = runner.invoke(cli, [])
     assert result.exit_code == 2
-    assert "Missing option '--foo'" in result.output
+    assert "缺少选项 '--foo'" in result.output
 
 
 def test_evaluation_order(runner):

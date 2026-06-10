@@ -84,7 +84,7 @@ def test_auto_shorthelp(runner):
     result = runner.invoke(cli, ["--help"])
     assert (
         re.search(
-            r"Commands:\n\s+"
+            r"命令:\n\s+"
             r"long\s+This is a long text that is too long to show as short help"
             r"\.\.\.\n\s+"
             r"short\s+This is a short text\.\n\s+"
@@ -120,7 +120,7 @@ def test_default_maps(runner):
 @pytest.mark.parametrize(
     ("args", "exit_code", "expect"),
     [
-        (["obj1"], 2, "Error: Missing command."),
+        (["obj1"], 2, "错误: 缺少命令"),
         (["obj1", "--help"], 0, "Show this message and exit."),
         (["obj1", "move"], 0, "obj=obj1\nmove\n"),
         ([], 2, "Show this message and exit."),
@@ -316,7 +316,7 @@ def test_aliased_command_canonical_name(runner):
 
     result = runner.invoke(cli, ["pu", "--help"])
     assert not result.exception
-    assert result.output.startswith("Usage: root push [OPTIONS]")
+    assert result.output.startswith("用法: root push [选项]")
 
 
 def test_group_add_command_name(runner):
@@ -485,7 +485,7 @@ def test_deprecated_in_help_messages(runner, doc, deprecated):
         pass
 
     result = runner.invoke(cli, ["--help"])
-    assert "(DEPRECATED" in result.output
+    assert "(已弃用" in result.output
 
     if isinstance(deprecated, str):
         assert deprecated in result.output
@@ -498,7 +498,7 @@ def test_deprecated_in_invocation(runner, deprecated):
         pass
 
     result = runner.invoke(deprecated_cmd)
-    assert "DeprecationWarning:" in result.output
+    assert "弃用警告:" in result.output
 
     if isinstance(deprecated, str):
         assert deprecated in result.output
@@ -578,14 +578,14 @@ def test_abort_exceptions_with_disabled_standalone_mode(runner, exc):
 def test_unknown_command(runner):
     result = runner.invoke(click.Group(), "unknown")
     assert result.exception
-    assert "No such command 'unknown'." in result.output
+    assert "没有命令 'unknown'" in result.output
 
 
 @pytest.mark.parametrize(
     ("value", "expect"),
     [
-        ("pause", "Did you mean 'push'?"),
-        ("decline", "(Did you mean one of: 'declare', 'refine'?)"),
+        ("pause", "你是指 'push' 吗？"),
+        ("decline", "(你是指: 'declare', 'refine' 其中之一吗？)"),
     ],
 )
 def test_suggest_possible_commands(runner, value, expect):

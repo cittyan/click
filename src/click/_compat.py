@@ -317,21 +317,21 @@ def _force_correct_text_writer(
 def get_binary_stdin() -> t.BinaryIO:
     reader = _find_binary_reader(sys.stdin)
     if reader is None:
-        raise RuntimeError("Was not able to determine binary stream for sys.stdin.")
+        raise RuntimeError("无法确定 sys.stdin 的二进制流")
     return reader
 
 
 def get_binary_stdout() -> t.BinaryIO:
     writer = _find_binary_writer(sys.stdout)
     if writer is None:
-        raise RuntimeError("Was not able to determine binary stream for sys.stdout.")
+        raise RuntimeError("无法确定 sys.stdout 的二进制流")
     return writer
 
 
 def get_binary_stderr() -> t.BinaryIO:
     writer = _find_binary_writer(sys.stderr)
     if writer is None:
-        raise RuntimeError("Was not able to determine binary stream for sys.stderr.")
+        raise RuntimeError("无法确定 sys.stderr 的二进制流")
     return writer
 
 
@@ -403,9 +403,9 @@ def open_stream(
             " if that's what you're after."
         )
     if "x" in mode:
-        raise ValueError("Use the `overwrite`-parameter instead.")
+        raise ValueError("请改用 `overwrite` 参数")
     if "w" not in mode:
-        raise ValueError("Atomic writes only make sense with `w`-mode.")
+        raise ValueError("原子写入仅在 `w` 模式下有效")
 
     # Atomic writes are more complicated.  They work by opening a file
     # as a proxy in the same folder and then using the fdopen

@@ -26,8 +26,8 @@ def _join_param_hints(param_hint: cabc.Sequence[str] | str | None) -> str | None
 def _format_possibilities(possibilities: list[str]) -> str:
     possibility_str = ", ".join(repr(p) for p in sorted(possibilities))
     return ngettext(
-        "Did you mean {possibility}?",
-        "(Did you mean one of: {possibilities}?)",
+        "你是指 {possibility} 吗？",
+        "(你是指: {possibilities} 其中之一吗？)",
         len(possibilities),
     ).format(possibility=possibility_str, possibilities=possibility_str)
 
@@ -56,7 +56,7 @@ class ClickException(Exception):
             file = get_text_stderr()
 
         echo(
-            _("Error: {message}").format(message=self.format_message()),
+            _("错误: {message}").format(message=self.format_message()),
             file=file,
             color=self.show_color,
         )
@@ -90,7 +90,7 @@ class UsageError(ClickException):
             help_names = self.ctx.command.get_help_option_names(self.ctx)
             # Pick the longest name (like ``--help`` over ``-h``) for
             # readability in error messages.
-            hint = _("Try '{command} {option}' for help.").format(
+            hint = _("尝试输入 '{command} {option}' 获取帮助").format(
                 command=self.ctx.command_path,
                 option=max(help_names, key=len),
             )
@@ -99,7 +99,7 @@ class UsageError(ClickException):
             color = self.ctx.color
             echo(f"{self.ctx.get_usage()}\n{hint}", file=file, color=color)
         echo(
-            _("Error: {message}").format(message=self.format_message()),
+            _("错误: {message}").format(message=self.format_message()),
             file=file,
             color=color,
         )
@@ -140,9 +140,9 @@ class BadParameter(UsageError):
         elif self.param is not None:
             param_hint = self.param.get_error_hint(self.ctx)
         else:
-            return _("Invalid value: {message}").format(message=self.message)
+            return _("无效值: {message}").format(message=self.message)
 
-        return _("Invalid value for {param_hint}: {message}").format(
+        return _("{param_hint} 的值无效: {message}").format(
             param_hint=_join_param_hints(param_hint), message=self.message
         )
 
@@ -200,20 +200,20 @@ class MissingParameter(BadParameter):
 
         # Translate param_type for known types.
         if param_type == "argument":
-            missing = _("Missing argument")
+            missing = _("缺少参数")
         elif param_type == "option":
-            missing = _("Missing option")
+            missing = _("缺少选项")
         elif param_type == "parameter":
-            missing = _("Missing parameter")
+            missing = _("缺少形参")
         else:
-            missing = _("Missing {param_type}").format(param_type=param_type)
+            missing = _("缺少 {param_type}").format(param_type=param_type)
 
         return f"{missing}{param_hint}.{msg}"
 
     def __str__(self) -> str:
         if not self.message:
             param_name = self.param.name if self.param else None
-            return _("Missing parameter: {param_name}").format(param_name=param_name)
+            return _("缺少形参: {param_name}").format(param_name=param_name)
         else:
             return self.message
 
@@ -232,7 +232,7 @@ class NoSuchOption(UsageError):
         ctx: Context | None = None,
     ) -> None:
         if message is None:
-            message = _("No such option {name!r}.").format(name=option_name)
+            message = _("没有选项 {name!r}").format(name=option_name)
 
         super().__init__(message, ctx)
         self.option_name = option_name
@@ -262,7 +262,7 @@ class NoSuchCommand(UsageError):
         ctx: Context | None = None,
     ) -> None:
         if message is None:
-            message = _("No such command {name!r}.").format(name=command_name)
+            message = _("没有命令 {name!r}").format(name=command_name)
 
         super().__init__(message, ctx)
         self.command_name = command_name
@@ -318,20 +318,20 @@ class FileError(ClickException):
 
     def __init__(self, filename: str, hint: str | None = None) -> None:
         if hint is None:
-            hint = _("unknown error")
+            hint = _("未知错误")
 
         super().__init__(hint)
         self.ui_filename: str = format_filename(filename)
         self.filename = filename
 
     def format_message(self) -> str:
-        return _("Could not open file {filename!r}: {message}").format(
+        return _("无法打开文件 {filename!r}: {message}").format(
             filename=self.ui_filename, message=self.message
         )
 
 
 class Abort(RuntimeError):
-    """An internal signalling exception that signals Click to abort."""
+    """内部信号异常，提示 Click 以中止操作"""
 
 
 class Exit(RuntimeError):

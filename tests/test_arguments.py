@@ -56,7 +56,7 @@ def test_nargs_tup_composite(runner, opts):
 
 
 def test_nargs_mismatch_with_tuple_type():
-    with pytest.raises(ValueError, match="nargs.*must be 2.*but it was 3"):
+    with pytest.raises(ValueError, match="nargs.*必须为 2.*但实际为 3"):
 
         @click.command()
         @click.argument("test", type=(str, int), nargs=3)
@@ -76,7 +76,7 @@ def test_nargs_err(runner):
 
     result = runner.invoke(copy, ["foo", "bar"])
     assert result.exit_code == 2
-    assert "Got unexpected extra argument (bar)" in result.output
+    assert "遇到意外的额外参数 (bar)" in result.output
 
 
 def test_bytes_args(runner, monkeypatch):
@@ -174,9 +174,9 @@ def test_stdout_default(runner):
     ("nargs", "value", "expect"),
     [
         (2, "", None),
-        (2, "a", "Takes 2 values but 1 was given."),
+        (2, "a", "需要 2 个值，但只提供了 1 个"),
         (2, "a b", ("a", "b")),
-        (2, "a b c", "Takes 2 values but 3 were given."),
+        (2, "a b c", "需要 2 个值，但提供了 3 个"),
         (-1, "a b c", ("a", "b", "c")),
         (-1, "", ()),
     ],
@@ -231,7 +231,7 @@ def test_empty_nargs(runner):
 
     result = runner.invoke(cmd2, [])
     assert result.exit_code == 2
-    assert "Missing argument 'ARG...'" in result.output
+    assert "缺少参数 'ARG...'" in result.output
 
 
 def test_missing_arg(runner):
@@ -242,7 +242,7 @@ def test_missing_arg(runner):
 
     result = runner.invoke(cmd, [])
     assert result.exit_code == 2
-    assert "Missing argument 'ARG'." in result.output
+    assert "缺少参数 'ARG'." in result.output
 
 
 @pytest.mark.parametrize(
@@ -277,7 +277,7 @@ def test_required_argument(value, expect_missing, processed_value):
     if expect_missing:
         with pytest.raises(click.MissingParameter) as excinfo:
             argument.process_value(ctx, value)
-        assert str(excinfo.value) == "Missing parameter: a"
+        assert str(excinfo.value) == "缺少形参: a"
 
     else:
         value = argument.process_value(ctx, value)
@@ -322,14 +322,14 @@ def test_deprecated_warning(runner, deprecated):
 
     result = runner.invoke(cli, ["hello"])
     assert result.exit_code == 0, result.output
-    assert "argument 'MY_ARGUMENT' is deprecated" in result.output
+    assert "argument 'MY_ARGUMENT' 已被弃用" in result.output
 
     if isinstance(deprecated, str):
         assert deprecated in result.output
 
 
 def test_deprecated_required(runner):
-    with pytest.raises(ValueError, match="is deprecated and still required"):
+    with pytest.raises(ValueError, match="已被弃用，但仍需保留"):
         click.Argument(["a"], required=True, deprecated=True)
 
 
@@ -423,65 +423,65 @@ def test_good_defaults_for_nargs(runner, argument_params, args, expected):
     ("default", "message"),
     [
         # Non-iterables defaults.
-        ["Yo", "Error: Invalid value for '[A]...': Value must be an iterable."],
-        ["", "Error: Invalid value for '[A]...': Value must be an iterable."],
-        [True, "Error: Invalid value for '[A]...': Value must be an iterable."],
-        [False, "Error: Invalid value for '[A]...': Value must be an iterable."],
-        [12, "Error: Invalid value for '[A]...': Value must be an iterable."],
-        [7.9, "Error: Invalid value for '[A]...': Value must be an iterable."],
+        ["Yo", "错误: '[A]...' 的值无效: 值必须是一个可迭代对象"],
+        ["", "错误: '[A]...' 的值无效: 值必须是一个可迭代对象"],
+        [True, "错误: '[A]...' 的值无效: 值必须是一个可迭代对象"],
+        [False, "错误: '[A]...' 的值无效: 值必须是一个可迭代对象"],
+        [12, "错误: '[A]...' 的值无效: 值必须是一个可迭代对象"],
+        [7.9, "错误: '[A]...' 的值无效: 值必须是一个可迭代对象"],
         # Generator default.
-        [(), "Error: Invalid value for '[A]...': Takes 2 values but 0 were given."],
+        [(), "错误: '[A]...' 的值无效: 需要 2 个值，但提供了 0 个"],
         # Unset default.
-        [UNSET, "Error: Missing argument 'A...'."],
+        [UNSET, "错误: 缺少参数 'A...'."],
         # Tuples defaults with wrong length.
         [
             tuple(),
-            "Error: Invalid value for '[A]...': Takes 2 values but 0 were given.",
+            "错误: '[A]...' 的值无效: 需要 2 个值，但提供了 0 个",
         ],
-        [(1,), "Error: Invalid value for '[A]...': Takes 2 values but 1 was given."],
+        [(1,), "错误: '[A]...' 的值无效: 需要 2 个值，但只提供了 1 个"],
         [
             (1, 2, 3),
-            "Error: Invalid value for '[A]...': Takes 2 values but 3 were given.",
+            "错误: '[A]...' 的值无效: 需要 2 个值，但提供了 3 个",
         ],
         # Lists defaults with wrong length.
-        [list(), "Error: Invalid value for '[A]...': Takes 2 values but 0 were given."],
-        [[1], "Error: Invalid value for '[A]...': Takes 2 values but 1 was given."],
+        [list(), "错误: '[A]...' 的值无效: 需要 2 个值，但提供了 0 个"],
+        [[1], "错误: '[A]...' 的值无效: 需要 2 个值，但只提供了 1 个"],
         [
             [1, 2, 3],
-            "Error: Invalid value for '[A]...': Takes 2 values but 3 were given.",
+            "错误: '[A]...' 的值无效: 需要 2 个值，但提供了 3 个",
         ],
         # Sets defaults with wrong length.
-        [set(), "Error: Invalid value for '[A]...': Takes 2 values but 0 were given."],
+        [set(), "错误: '[A]...' 的值无效: 需要 2 个值，但提供了 0 个"],
         [
             set([1]),
-            "Error: Invalid value for '[A]...': Takes 2 values but 1 was given.",
+            "错误: '[A]...' 的值无效: 需要 2 个值，但只提供了 1 个",
         ],
         [
             set([1, 2, 3]),
-            "Error: Invalid value for '[A]...': Takes 2 values but 3 were given.",
+            "错误: '[A]...' 的值无效: 需要 2 个值，但提供了 3 个",
         ],
         # Frozensets defaults with wrong length.
         [
             frozenset(),
-            "Error: Invalid value for '[A]...': Takes 2 values but 0 were given.",
+            "错误: '[A]...' 的值无效: 需要 2 个值，但提供了 0 个",
         ],
         [
             frozenset([1]),
-            "Error: Invalid value for '[A]...': Takes 2 values but 1 was given.",
+            "错误: '[A]...' 的值无效: 需要 2 个值，但只提供了 1 个",
         ],
         [
             frozenset([1, 2, 3]),
-            "Error: Invalid value for '[A]...': Takes 2 values but 3 were given.",
+            "错误: '[A]...' 的值无效: 需要 2 个值，但提供了 3 个",
         ],
         # Dictionaries defaults with wrong length.
-        [dict(), "Error: Invalid value for '[A]...': Takes 2 values but 0 were given."],
+        [dict(), "错误: '[A]...' 的值无效: 需要 2 个值，但提供了 0 个"],
         [
             {1: "a"},
-            "Error: Invalid value for '[A]...': Takes 2 values but 1 was given.",
+            "错误: '[A]...' 的值无效: 需要 2 个值，但只提供了 1 个",
         ],
         [
             {1: "a", 2: "b", 3: "c"},
-            "Error: Invalid value for '[A]...': Takes 2 values but 3 were given.",
+            "错误: '[A]...' 的值无效: 需要 2 个值，但提供了 3 个",
         ],
     ],
 )
@@ -527,7 +527,7 @@ def test_subcommand_help(runner):
 
     result = runner.invoke(cli, ["foo", "bar", "cmd", "--help"])
     assert not result.exception
-    assert "Usage: cli NAME VAL cmd [OPTIONS]" in result.output
+    assert "用法: cli NAME VAL cmd [选项]" in result.output
 
 
 def test_nested_subcommand_help(runner):
@@ -549,7 +549,7 @@ def test_nested_subcommand_help(runner):
 
     result = runner.invoke(cli, ["arg1", "cmd", "arg2", "subcmd", "--help"])
     assert not result.exception
-    assert "Usage: cli ARG1 cmd ARG2 subcmd [OPTIONS]" in result.output
+    assert "用法: cli ARG1 cmd ARG2 subcmd [选项]" in result.output
 
 
 def test_when_argument_decorator_is_used_multiple_times_cls_is_preserved():

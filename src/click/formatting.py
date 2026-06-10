@@ -139,15 +139,15 @@ class HelpFormatter:
         self.buffer: list[str] = []
 
     def write(self, string: str) -> None:
-        """Writes a unicode string into the internal buffer."""
+        """将一个 Unicode 字符串写入内部缓冲区"""
         self.buffer.append(string)
 
     def indent(self) -> None:
-        """Increases the indentation."""
+        """增加缩进"""
         self.current_indent += self.indent_increment
 
     def dedent(self) -> None:
-        """Decreases the indentation."""
+        """减少缩进"""
         self.current_indent -= self.indent_increment
 
     def write_usage(self, prog: str, args: str = "", prefix: str | None = None) -> None:
@@ -159,7 +159,7 @@ class HelpFormatter:
             ``"Usage: "``.
         """
         if prefix is None:
-            prefix = "{usage} ".format(usage=_("Usage:"))
+            prefix = "{usage} ".format(usage=_("用法:"))
 
         usage_prefix = f"{prefix:>{self.current_indent}}{prog} "
         text_width = self.width - self.current_indent
@@ -238,7 +238,7 @@ class HelpFormatter:
         rows = list(rows)
         widths = measure_table(rows)
         if len(widths) != 2:
-            raise TypeError("Expected two columns for definition list")
+            raise TypeError("定义列表应包含两列")
 
         first_col = min(widths[0], col_max) + col_spacing
 
