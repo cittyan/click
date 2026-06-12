@@ -5,7 +5,7 @@ on:
     branches:
       - 8.4.1-zh # 仅在您指定的分支提交时触发
 
-# 必须设置以下权限，允许工作流直接与 GitHub Pages API 通信
+# 必须设置以下权限，允许工作流直接与 GitHub Pages API 
 permissions:
   contents: read
   pages: write
