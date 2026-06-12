@@ -26,7 +26,7 @@ jobs:
           python-version-file: pyproject.toml
       - run: uv sync --group docs
       - run: uv run sphinx-build -E -W -b dirhtml docs docs/_build/dirhtml
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: docs/_build/dirhtml
 
@@ -37,5 +37,5 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/deploy-pages@v4
+      - uses: actions/deploy-pages@v5
         id: deployment
