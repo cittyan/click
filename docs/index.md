@@ -1,8 +1,9 @@
 ---
-
+layout: default
+title: Click Docs
 ---
 
-#
+# Click Docs
 
 ```{image} _static/click-name.svg
 :align: center

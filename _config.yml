@@ -1,0 +1,11 @@
+title: Click 中文文档 (8.4.1-zh)
+description: Click 是一个利用极其轻量级的代码绑定创造优雅命令行工具的 Python 包。
+url: "https://github.io"
+baseurl: "/click" # 必须与您的 GitHub 仓库名一致
+
+# 关键配置：告诉 Jekyll 包含 docs 目录
+include:
+  - docs
+
+# 选用 GitHub Pages 官方支持的主题（例如 minimal, cayman, architect 等）
+theme: jekyll-theme-minimal

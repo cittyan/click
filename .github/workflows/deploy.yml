@@ -1,17 +1,17 @@
-name: Deploy Docs to GitHub Pages
+name: Deploy Jekyll site to Pages
 
 on:
   push:
     branches:
       - 8.4.1-zh # 仅在您指定的分支提交时触发
 
-# 必须设置以下权限，允许工作流直接与 GitHub Pages API 
+# 赋予工作流直接与 GitHub Pages API 通信的写入权限
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# 确保同一时间只有一个部署任务在运行，避免冲突
+# 确保同一时间只有一个部署任务在运行
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -26,24 +26,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Configure Python
-        uses: actions/setup-python@v5
+      - name: Setup Pages
+        uses: actions/configure-pages@v5 # 自动配置 GitHub Pages 环境
+
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1 # 官方 Jekyll 编译动作
         with:
-          python-version: 3.x
-
-      - name: Install dependencies
-        run: |
-          pip install mkdocs-material
-
-      - name: Build Docs
-        run: |
-          mkdocs build # 仅编译输出到 site/ 文件夹，不推送到任何分支
+          source: ./ # 指定根目录，因为 docs/ 在其下方
+          destination: ./_site
 
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./site # 将 MkDocs 生成的静态网页目录打包上传
+          path: ./_site # 将 Jekyll 编译出的静态网页打包上传
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4 # 直接部署到 GitHub Pages 服务器
+        uses: actions/deploy-pages@v4 # 直接空投部署到 Pages 服务器
