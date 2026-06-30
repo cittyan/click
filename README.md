@@ -1,3 +1,8 @@
+- 上游源码: https://github.com/pallets/click
+- 官方文档: https://click.palletsprojects.com/en/stable/
+
+---
+
 <div align="center"><img src="https://raw.githubusercontent.com/pallets/click/refs/heads/stable/docs/_static/click-name.svg" alt="" height="150"></div>
 
 # Click
