@@ -1,5 +1,5 @@
-Click Examples
+Click 示例
 
-  This folder contains various Click examples.  Note that
-  all of these are not runnable by themselves but should be
-  installed into a virtualenv.
+  此文件夹包含各种 Click 示例。
+
+  请注意，这些示例本身无法直接运行，而应安装到虚拟环境（virtualenv）中。

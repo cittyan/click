@@ -100,7 +100,9 @@ def _format_deprecated_label(deprecated: bool | str) -> str:
 
 
 def _format_deprecated_suffix(deprecated: bool | str) -> str:
-    """返回一个 ``DeprecationWarning`` 消息的尾部原因，前面加上一个空格。
+    """
+    返回一个 ``弃用警告`` 消息的尾部原因，前面加上一个空格。
+
     如果没有给出原因，则返回空字符串。
     """
     if isinstance(deprecated, str):
@@ -135,7 +137,8 @@ def iter_params_for_processing(
     invocation_order: cabc.Sequence[Parameter],
     declaration_order: cabc.Sequence[Parameter],
 ) -> list[Parameter]:
-    """按应处理的顺序返回所有已声明的参数。
+    """
+    按应处理的顺序返回所有已声明的参数。
 
     已声明的参数会根据调用顺序以及每个参数的“急切性”（eagerness）重新排列。
 
@@ -157,7 +160,8 @@ def iter_params_for_processing(
 
 
 class ParameterSource(enum.IntEnum):
-    """这是一个 `:class:`~enum.IntEnum`，用于指示参数值的来源。
+    """
+    这是一个 `:class:`~enum.IntEnum`，用于指示参数值的来源。
 
     使用 :meth:`click.Context.get_parameter_source` 方法可以通过参数名称获取其来源。
 
@@ -171,14 +175,13 @@ class ParameterSource(enum.IntEnum):
             ...  # value was explicitly set
 
     .. versionchanged:: 8.3.3
-        Use :class:`~enum.IntEnum` and reorder members from most to
-        least explicit. Supports comparison operators.
+        使用 :class:`~enum.IntEnum` 并将成员按从最明确到最不明确的顺序重新排列。支持比较运算符。
 
     .. versionchanged:: 8.0
-        Use :class:`~enum.Enum` and drop the ``validate`` method.
+        使用 :class:`~enum.Enum` 并删除 ``validate`` 方法。
 
     .. versionchanged:: 8.0
-        Added the ``PROMPT`` value.
+        添加了 ``PROMPT`` 值。
     """
 
     PROMPT = enum.auto()
@@ -194,102 +197,52 @@ class ParameterSource(enum.IntEnum):
 
 
 class Context:
-    """The context is a special internal object that holds state relevant
-    for the script execution at every single level.  It's normally invisible
-    to commands unless they opt-in to getting access to it.
+    """
+    上下文是一个特殊的内部对象，它保存了与脚本在每一层级执行相关的状态。
 
-    The context is useful as it can pass internal objects around and can
-    control special execution features such as reading data from
-    environment variables.
+    通常情况下，命令无法直接访问它，除非命令主动选择获取访问权限。
 
-    A context can be used as context manager in which case it will call
-    :meth:`close` on teardown.
+    上下文非常有用，因为它可以传递内部对象，并可以控制一些特殊的执行特性，例如从环境变量中读取数据。
 
-    :param command: the command class for this context.
-    :param parent: the parent context.
-    :param info_name: the info name for this invocation.  Generally this
-                      is the most descriptive name for the script or
-                      command.  For the toplevel script it is usually
-                      the name of the script, for commands below that it's
-                      the name of the script.
-    :param obj: an arbitrary object of user data.
-    :param auto_envvar_prefix: the prefix to use for automatic environment
-                               variables.  If this is `None` then reading
-                               from environment variables is disabled.  This
-                               does not affect manually set environment
-                               variables which are always read.
-    :param default_map: a dictionary (like object) with default values
-                        for parameters.
-    :param terminal_width: the width of the terminal.  The default is
-                           inherit from parent context.  If no context
-                           defines the terminal width then auto
-                           detection will be applied.
-    :param max_content_width: the maximum width for content rendered by
-                              Click (this currently only affects help
-                              pages).  This defaults to 80 characters if
-                              not overridden.  In other words: even if the
-                              terminal is larger than that, Click will not
-                              format things wider than 80 characters by
-                              default.  In addition to that, formatters might
-                              add some safety mapping on the right.
-    :param resilient_parsing: if this flag is enabled then Click will
-                              parse without any interactivity or callback
-                              invocation.  Default values will also be
-                              ignored.  This is useful for implementing
-                              things such as completion support.
-    :param allow_extra_args: if this is set to `True` then extra arguments
-                             at the end will not raise an error and will be
-                             kept on the context.  The default is to inherit
-                             from the command.
-    :param allow_interspersed_args: if this is set to `False` then options
-                                    and arguments cannot be mixed.  The
-                                    default is to inherit from the command.
-    :param ignore_unknown_options: instructs click to ignore options it does
-                                   not know and keeps them for later
-                                   processing.
-    :param help_option_names: optionally a list of strings that define how
-                              the default help parameter is named.  The
-                              default is ``['--help']``.
-    :param token_normalize_func: an optional function that is used to
-                                 normalize tokens (options, choices,
-                                 etc.).  This for instance can be used to
-                                 implement case insensitive behavior.
-    :param color: controls if the terminal supports ANSI colors or not.  The
-                  default is autodetection.  This is only needed if ANSI
-                  codes are used in texts that Click prints which is by
-                  default not the case.  This for instance would affect
-                  help output.
-    :param show_default: Show the default value for commands. If this
-        value is not set, it defaults to the value from the parent
-        context. ``Command.show_default`` overrides this default for the
-        specific command.
+    上下文可以用作上下文管理器，在这种情况下，它会在销毁时调用 `:meth:`close`` 方法。
+
+    :param command: 该上下文的命令类
+    :param parent: 父上下文
+    :param info_name: 本次调用的信息名称。通常这是脚本或命令最具描述性的名称。对于顶层脚本，它通常是脚本的名称；对于其下的命令，则是脚本的名称
+    :param obj: 一个任意的用户数据对象
+    :param auto_envvar_prefix: 用于自动环境变量的前缀。如果此值为 `None`，则禁用从环境变量中读取。这不会影响手动设置的环境变量，它们始终会被读取
+    :param default_map: 一个包含参数默认值的字典（类似对象）
+    :param terminal_width: 终端的宽度。默认值是从父上下文中继承。如果没有上下文定义终端宽度，则将应用自动检测
+    :param max_content_width: Click 渲染内容的最大宽度（目前仅影响帮助页面）。如果未覆盖，则默认为 80 个字符。换句话说：即使终端宽度大于该值，Click 默认也不会将内容格式化为超过 80 个字符。此外，格式化器可能会在右侧添加一些安全边距
+    :param resilient_parsing: 如果启用此标志，则 Click 将解析而不进行任何交互或回调调用。默认值也将被忽略。这对于实现诸如补全支持等功能很有用
+    :param allow_extra_args: 如果设置为 `True`，则末尾的额外参数不会引发错误，并且会保留在上下文中。默认值是从命令继承
+    :param allow_interspersed_args: 如果设置为 `False`，则选项和参数不能混用。默认值是从命令继承
+    :param ignore_unknown_options: 指示 Click 忽略它不识别的选项，并将其保留以供后续处理
+    :param help_option_names: 可选地，一个字符串列表，用于定义默认帮助参数的名称。默认值为 ``['--help']``
+    :param token_normalize_func: 一个可选函数，用于规范化标记（选项、选择项等）。例如，可以用于实现大小写不敏感的行为
+    :param color: 控制终端是否支持 ANSI 颜色。默认值为自动检测。仅在 Click 打印的文本中使用了 ANSI 代码时才需要设置此值（默认情况下不会使用）。例如，这会影响帮助输出
+    :param show_default: 显示命令的默认值。如果未设置此值，则默认为父上下文的值。``Command.show_default`` 会覆盖特定命令的此默认值
 
     .. versionchanged:: 8.2
-        The ``protected_args`` attribute is deprecated and will be removed in
-        Click 9.0. ``args`` will contain remaining unparsed tokens.
+        ``protected_args`` 属性已被弃用，并将在 Click 9.0 中移除。``args`` 将包含剩余的未解析标记。
 
     .. versionchanged:: 8.1
-        The ``show_default`` parameter is overridden by
-        ``Command.show_default``, instead of the other way around.
+        ``show_default`` 参数现在由 ``Command.show_default`` 覆盖，而不是相反。
 
     .. versionchanged:: 8.0
-        The ``show_default`` parameter defaults to the value from the
-        parent context.
+        ``show_default`` 参数的默认值来自父上下文。
 
     .. versionchanged:: 7.1
-       Added the ``show_default`` parameter.
+        添加了 ``show_default`` 参数。
 
     .. versionchanged:: 4.0
-        Added the ``color``, ``ignore_unknown_options``, and
-        ``max_content_width`` parameters.
+        添加了 ``color``、``ignore_unknown_options`` 和 ``max_content_width`` 参数。
 
     .. versionchanged:: 3.0
-        Added the ``allow_extra_args`` and ``allow_interspersed_args``
-        parameters.
+        添加了 ``allow_extra_args`` 和 ``allow_interspersed_args`` 参数。
 
     .. versionchanged:: 2.0
-        Added the ``resilient_parsing``, ``help_option_names``, and
-        ``token_normalize_func`` parameters.
+        添加了 ``resilient_parsing``、``help_option_names`` 和 ``token_normalize_func`` 参数。
     """
 
     #: The formatter class to create with :meth:`make_formatter`.
@@ -485,9 +438,8 @@ class Context:
         return self._protected_args
 
     def to_info_dict(self) -> dict[str, t.Any]:
-        """Gather information that could be useful for a tool generating
-        user-facing documentation. This traverses the entire CLI
-        structure.
+        """
+        收集可能对生成面向用户的文档工具有用的信息。这将遍历整个命令行界面（CLI）结构
 
         .. code-block:: python
 
@@ -564,18 +516,14 @@ class Context:
 
     @property
     def meta(self) -> dict[str, t.Any]:
-        """This is a dictionary which is shared with all the contexts
-        that are nested.  It exists so that click utilities can store some
-        state here if they need to.  It is however the responsibility of
-        that code to manage this dictionary well.
+        """
+        这是一个与所有嵌套上下文共享的字典。它的存在是为了让点击工具（click utilities）在需要时可以将一些状态存储在这里。
+        然而，管理这个字典的责任在于相关代码本身。
 
-        The keys are supposed to be unique dotted strings.  For instance
-        module paths are a good choice for it.  What is stored in there is
-        irrelevant for the operation of click.  However what is important is
-        that code that places data here adheres to the general semantics of
-        the system.
+        字典的键应该是唯一的点号分隔字符串。例如，模块路径就是一个很好的选择。存储在其中的内容对 click 的运行并不重要。
+        但重要的是，将数据放入此处的代码必须遵循系统的通用语义。
 
-        Example usage::
+        示例用法::
 
             LANG_KEY = f'{__name__}.lang'
 
@@ -591,32 +539,27 @@ class Context:
         return self._meta
 
     def make_formatter(self) -> HelpFormatter:
-        """Creates the :class:`~click.HelpFormatter` for the help and
-        usage output.
+        """
+        为帮助和使用输出创建 :class:`~click.HelpFormatter`。
 
-        To quickly customize the formatter class used without overriding
-        this method, set the :attr:`formatter_class` attribute.
+        若要快速自定义所使用的格式化器类而不覆盖此方法，请设置 :attr:`formatter_class` 属性。
 
         .. versionchanged:: 8.0
-            Added the :attr:`formatter_class` attribute.
+            添加了 :attr:`formatter_class` 属性。
         """
         return self.formatter_class(
             width=self.terminal_width, max_width=self.max_content_width
         )
 
     def with_resource(self, context_manager: AbstractContextManager[V]) -> V:
-        """Register a resource as if it were used in a ``with``
-        statement. The resource will be cleaned up when the context is
-        popped.
+        """
+        将一个资源注册为在 ``with`` 语句中使用。当上下文被弹出时，该资源将被清理。
 
-        Uses :meth:`contextlib.ExitStack.enter_context`. It calls the
-        resource's ``__enter__()`` method and returns the result. When
-        the context is popped, it closes the stack, which calls the
-        resource's ``__exit__()`` method.
+        使用 :meth:`contextlib.ExitStack.enter_context`。它会调用资源的 ``__enter__()`` 方法并返回结果。
+        当上下文被弹出时，它会关闭堆栈，从而调用资源的 ``__exit__()`` 方法。
 
-        To register a cleanup function for something that isn't a
-        context manager, use :meth:`call_on_close`. Or use something
-        from :mod:`contextlib` to turn it into a context manager first.
+        要为非上下文管理器对象注册清理函数，请使用 :meth:`call_on_close`。
+        或者，可以使用 :mod:`contextlib` 中的某些功能先将其转换为上下文管理器。
 
         .. code-block:: python
 
@@ -626,29 +569,28 @@ class Context:
             def cli(ctx):
                 ctx.obj = ctx.with_resource(connect_db(name))
 
-        :param context_manager: The context manager to enter.
-        :return: Whatever ``context_manager.__enter__()`` returns.
+        :param context_manager: 要进入的上下文管理器
+
+        :return: 无论 ``context_manager.__enter__()`` 返回什么
 
         .. versionadded:: 8.0
         """
         return self._exit_stack.enter_context(context_manager)
 
     def call_on_close(self, f: t.Callable[..., t.Any]) -> t.Callable[..., t.Any]:
-        """Register a function to be called when the context tears down.
+        """
+        注册一个函数，以便在上下文销毁时被调用。
 
-        This can be used to close resources opened during the script
-        execution. Resources that support Python's context manager
-        protocol which would be used in a ``with`` statement should be
-        registered with :meth:`with_resource` instead.
+        这可以用于关闭在脚本执行期间打开的资源。
+        支持 Python 上下文管理器协议（可在 ``with`` 语句中使用）的资源应使用 :meth:`with_resource` 方法进行注册。
 
-        :param f: The function to execute on teardown.
+        :param f: 在拆除时执行的功能
         """
         return self._exit_stack.callback(f)
 
     def close(self) -> None:
-        """Invoke all close callbacks registered with
-        :meth:`call_on_close`, and exit all context managers entered
-        with :meth:`with_resource`.
+        """
+        调用所有通过 :meth:`call_on_close` 注册的关闭回调，并退出所有通过 :meth:`with_resource` 进入的上下文管理器。
         """
         self._close_with_exception_info(None, None, None)
 
@@ -658,11 +600,10 @@ class Context:
         exc_value: BaseException | None,
         tb: TracebackType | None,
     ) -> bool | None:
-        """Unwind the exit stack by calling its :meth:`__exit__` providing the exception
-        information to allow for exception handling by the various resources registered
-        using :meth;`with_resource`
+        """
+        通过调用其 `:meth:`__exit__` 方法并传递异常信息来解除退出栈，以便使用 :meth:`with_resource` 注册的各种资源能够进行异常处理。
 
-        :return: Whatever ``exit_stack.__exit__()`` returns.
+        :return: 无论 ``exit_stack.__exit__()`` 返回什么。
         """
         exit_result = self._exit_stack.__exit__(exc_type, exc_value, tb)
         # In case the context is reused, create a new exit stack.
@@ -672,9 +613,8 @@ class Context:
 
     @property
     def command_path(self) -> str:
-        """The computed command path.  This is used for the ``usage``
-        information on the help page.  It's automatically created by
-        combining the info names of the chain of contexts to the root.
+        """
+        计算得到的命令路径。这用于帮助页面上的“用法”信息。它是通过将上下文链到根节点的信息名称组合起来自动创建的。
         """
         rv = ""
         if self.info_name is not None:
@@ -690,14 +630,14 @@ class Context:
         return rv.lstrip()
 
     def find_root(self) -> Context:
-        """Finds the outermost context."""
+        """找到最外层的上下文"""
         node = self
         while node.parent is not None:
             node = node.parent
         return node
 
     def find_object(self, object_type: type[V]) -> V | None:
-        """Finds the closest object of a given type."""
+        """查找给定类型中最接近的对象"""
         node: Context | None = self
 
         while node is not None:
@@ -1532,33 +1472,23 @@ class _BaseCommand(Command, metaclass=_FakeSubclassCheck):
 
 
 class Group(Command):
-    """A group is a command that nests other commands (or more groups).
+    """
+    组是一个嵌套其他命令（或更多组）的命令
 
-    :param name: The name of the group command.
-    :param commands: Map names to :class:`Command` objects. Can be a list, which
-        will use :attr:`Command.name` as the keys.
-    :param invoke_without_command: Invoke the group's callback even if a
-        subcommand is not given.
-    :param no_args_is_help: If no arguments are given, show the group's help and
-        exit. Defaults to the opposite of ``invoke_without_command``.
-    :param subcommand_metavar: How to represent the subcommand argument in help.
-        The default will represent whether ``chain`` is set or not.
-    :param chain: Allow passing more than one subcommand argument. After parsing
-        a command's arguments, if any arguments remain another command will be
-        matched, and so on.
-    :param result_callback: A function to call after the group's and
-        subcommand's callbacks. The value returned by the subcommand is passed.
-        If ``chain`` is enabled, the value will be a list of values returned by
-        all the commands. If ``invoke_without_command`` is enabled, the value
-        will be the value returned by the group's callback, or an empty list if
-        ``chain`` is enabled.
-    :param kwargs: Other arguments passed to :class:`Command`.
+    :param name: 该组命令的名称
+    :param commands: 将映射名称与 :class:`Command` 对象关联。可以是一个列表，此时将使用 :attr:`Command.name` 作为键
+    :param invoke_without_command: 即使未给出子命令，也调用该组的回调函数
+    :param no_args_is_help: 如果未给出参数，则显示该组的帮助信息并退出。默认值与 ``invoke_without_command`` 的相反值相同
+    :param subcommand_metavar: 在帮助信息中如何表示子命令参数。默认值将表示是否设置了 ``chain``
+    :param chain: 允许传递多个子命令参数。在解析命令参数后，如果仍有剩余参数，则会匹配另一个命令，依此类推
+    :param result_callback: 在组命令和子命令的回调函数之后调用的函数。子命令返回的值会被传递。如果启用了 ``chain``，该值将是一个包含所有命令返回值的列表。如果启用了 ``invoke_without_command``，该值将是组命令回调函数返回的值，或者如果启用了 ``chain``，则为空列表
+    :param kwargs: 传递给 :class:`Command` 的其他参数
 
     .. versionchanged:: 8.0
-        The ``commands`` argument can be a list of command objects.
+        “commands”参数可以是一个命令对象列表
 
     .. versionchanged:: 8.2
-        Merged with and replaces the ``MultiCommand`` base class.
+        与“MultiCommand”基类合并并替换它
     """
 
     allow_extra_args = True
@@ -1671,19 +1601,18 @@ class Group(Command):
     def command(
         self, *args: t.Any, **kwargs: t.Any
     ) -> t.Callable[[t.Callable[..., t.Any]], Command] | Command:
-        """A shortcut decorator for declaring and attaching a command to
-        the group. This takes the same arguments as :func:`command` and
-        immediately registers the created command with this group by
-        calling :meth:`add_command`.
+        """
+        一个用于声明并将命令附加到组的快捷装饰器。
 
-        To customize the command class used, set the
-        :attr:`command_class` attribute.
+        它接受与 :func:`command` 相同的参数，并通过调用 :meth:`add_command` 立即将创建的命令注册到该组中。
+
+        若要自定义所使用的命令类，请设置 :attr:`command_class` 属性。
 
         .. versionchanged:: 8.1
-            This decorator can be applied without parentheses.
+            此装饰器可以不带括号直接使用。
 
         .. versionchanged:: 8.0
-            Added the :attr:`command_class` attribute.
+            新增了 :attr:`command_class` 属性。
         """
         from .decorators import command
 
@@ -2702,75 +2631,42 @@ class Parameter(ABC):
 
 
 class Option(Parameter):
-    """Options are usually optional values on the command line and
-    have some extra features that arguments don't have.
+    """
+    选项通常是命令行中的可选值，并且具有一些参数所不具备的额外特性。
 
-    All other parameters are passed onwards to the parameter constructor.
+    所有其他参数都会传递给参数构造函数。
 
-    :param show_default: Show the default value for this option in its
-        help text. Values are not shown by default, unless
-        :attr:`Context.show_default` is ``True``. If this value is a
-        string, it shows that string in parentheses instead of the
-        actual value. This is particularly useful for dynamic options.
-        For single option boolean flags, the default remains hidden if
-        its value is ``False``.
-    :param show_envvar: Controls if an environment variable should be
-        shown on the help page and error messages.
-        Normally, environment variables are not shown.
-    :param prompt: If set to ``True`` or a non empty string then the
-        user will be prompted for input. If set to ``True`` the prompt
-        will be the option name capitalized. A deprecated option cannot be
-        prompted.
-    :param confirmation_prompt: Prompt a second time to confirm the
-        value if it was prompted for. Can be set to a string instead of
-        ``True`` to customize the message.
-    :param prompt_required: If set to ``False``, the user will be
-        prompted for input only when the option was specified as a flag
-        without a value.
-    :param hide_input: If this is ``True`` then the input on the prompt
-        will be hidden from the user. This is useful for password input.
-    :param is_flag: forces this option to act as a flag.  The default is
-                    auto detection.
-    :param flag_value: which value should be used for this flag if it's
-                       enabled.  This is set to a boolean automatically if
-                       the option string contains a slash to mark two options.
-    :param multiple: if this is set to `True` then the argument is accepted
-                     multiple times and recorded.  This is similar to ``nargs``
-                     in how it works but supports arbitrary number of
-                     arguments.
-    :param count: this flag makes an option increment an integer.
-    :param allow_from_autoenv: if this is enabled then the value of this
-                               parameter will be pulled from an environment
-                               variable in case a prefix is defined on the
-                               context.
-    :param help: the help string.
-    :param hidden: hide this option from help outputs.
-    :param attrs: Other command arguments described in :class:`Parameter`.
+    :param show_default: 在帮助文本中显示该选项的默认值。默认情况下不会显示值，除非 :attr:`Context.show_default` 为 ``True``。如果该值是字符串，它将显示该字符串（带括号），而不是实际值。这对于动态选项特别有用。对于单个选项的布尔标志，如果其值为 ``False``，则默认值仍会隐藏
+    :param show_envvar: 控制是否在帮助页面和错误消息中显示环境变量。通常情况下，环境变量不会显示。 :param prompt: 如果设置为 ``True`` 或非空字符串，则会提示用户输入。如果设置为 ``True``，则提示信息将为该选项名称的大写形式。已弃用的选项不能被提示
+    :param confirmation_prompt: 如果该选项曾被提示输入，则再次提示以确认该值。可以将其设置为字符串而非 ``True``，以自定义提示信息
+    :param prompt_required: 如果设置为 ``False``，则仅当该选项被指定为不带值的标志时，才会提示用户输入
+    :param hide_input: 如果设置为 ``True``，则提示输入的内容将对用户隐藏。这对于密码输入非常有用
+    :param is_flag: 强制将该选项作为标志处理。默认值为自动检测
+    :param flag_value: 如果该标志被启用，则应使用哪个值。如果选项字符串中包含斜杠以标记两个选项，则该值会自动设置为布尔值
+    :param multiple: 如果设置为 `True`，则该参数可以接受多次输入并记录。其工作方式与 ``nargs`` 类似，但支持任意数量的参数
+    :param count: 该标志使选项能够递增一个整数值
+    :param allow_from_autoenv: 如果启用此选项，则当上下文中定义了前缀时，该参数的值将从环境变量中获取
+    :param help: 帮助字符串
+    :param hidden: 将该选项从帮助输出中隐藏
+    :param attrs: 其他命令参数，详见 :class:`Parameter`
 
     .. versionchanged:: 8.4.0
-        Non-basic ``flag_value`` types (not ``str``, ``int``, ``float``, or
-        ``bool``) are passed through unchanged instead of being stringified.
-        Previously, ``type=click.UNPROCESSED`` was required to preserve them.
+        非基本类型的 ``flag_value``（不是 ``str``、``int``、``float`` 或 ``bool``）将保持原样传递，而不会被转换为字符串。以前，需要使用 ``type=click.UNPROCESSED`` 才能保留这些类型。
 
     .. versionchanged:: 8.2
-        ``envvar`` used with ``flag_value`` will always use the ``flag_value``,
-        previously it would use the value of the environment variable.
+        与 ``flag_value`` 一起使用的 ``envvar`` 将始终使用 ``flag_value``，而以前它会使用环境变量的值。
 
     .. versionchanged:: 8.1
-        Help text indentation is cleaned here instead of only in the
-        ``@option`` decorator.
+        帮助文本的缩进在此处进行了清理，而不仅仅是在 ``@option`` 装饰器中。
 
     .. versionchanged:: 8.1
-        The ``show_default`` parameter overrides
-        ``Context.show_default``.
+        ``show_default`` 参数会覆盖 ``Context.show_default`` 的设置。
 
     .. versionchanged:: 8.1
-        The default of a single option boolean flag is not shown if the
-        default value is ``False``.
+        如果默认值为 ``False``，则不会显示单个选项布尔标志的默认值。
 
     .. versionchanged:: 8.0.1
-        ``type`` is detected from ``flag_value`` if given, for basic Python
-        types (``str``, ``int``, ``float``, ``bool``).
+        如果提供了 ``flag_value``，则会从 ``flag_value`` 中检测 ``type``，适用于基本的 Python 类型（``str``、``int``、``float``、``bool``）。
     """
 
     param_type_name = "option"
@@ -2966,21 +2862,13 @@ class Option(Parameter):
     ) -> t.Any | t.Callable[[], t.Any] | None:
         """Return the default value for this option.
 
-        For non-boolean flag options, ``default=True`` is treated as a sentinel
-        meaning "activate this flag by default" and is resolved to
-        :attr:`flag_value`.  For example, with ``--upper/--lower`` feature
-        switches where ``flag_value="upper"`` and ``default=True``, the default
-        resolves to ``"upper"``.
+        For non-boolean flag options, ``default=True`` is treated as a sentinel meaning "activate this flag by default" and is resolved to :attr:`flag_value`.  For example, with ``--upper/--lower`` feature switches where ``flag_value="upper"`` and ``default=True``, the default resolves to ``"upper"``.
 
         .. caution::
-            This substitution only applies to non-boolean flags
-            (:attr:`is_bool_flag` is ``False``). For boolean flags, ``True`` is
-            a legitimate Python value and ``default=True`` is returned as-is.
+            This substitution only applies to non-boolean flags (:attr:`is_bool_flag` is ``False``). For boolean flags, ``True`` is a legitimate Python value and ``default=True`` is returned as-is.
 
         .. versionchanged:: 8.3.3
-            ``default=True`` is no longer substituted with ``flag_value`` for
-            boolean flags, fixing negative boolean flags like
-            ``flag_value=False, default=True``.
+            ``default=True`` is no longer substituted with ``flag_value`` for boolean flags, fixing negative boolean flags like ``flag_value=False, default=True``.
         """
         value = super().get_default(ctx, call=False)
 

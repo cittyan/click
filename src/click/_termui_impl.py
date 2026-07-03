@@ -1,7 +1,7 @@
 """
-This module contains implementations for the termui module. To keep the
-import time of Click down, some infrequently used functionality is
-placed in this module and only imported as needed.
+该模块包含 termui 模块的实现。
+
+为了降低 Click 的导入时间，一些不常用的功能被放置在此模块中，仅在需要时才进行导入。
 """
 
 from __future__ import annotations
@@ -321,20 +321,16 @@ class ProgressBar(t.Generic[V]):
         self.eta_known = self.length is not None
 
     def update(self, n_steps: int, current_item: V | None = None) -> None:
-        """Update the progress bar by advancing a specified number of
-        steps, and optionally set the ``current_item`` for this new
-        position.
+        """通过前进指定步数来更新进度条，并可选择为此新位置设置``current_item``
 
-        :param n_steps: Number of steps to advance.
-        :param current_item: Optional item to set as ``current_item``
-            for the updated position.
+        :param n_steps: 要前进的步数
+        :param current_item: 可选项目，用于将更新后的位置设置为``current_item``
 
         .. versionchanged:: 8.0
-            Added the ``current_item`` optional parameter.
+            添加了``current_item``可选参数
 
         .. versionchanged:: 8.0
-            Only render when the number of steps meets the
-            ``update_min_steps`` threshold.
+            仅当步数达到``update_min_steps``阈值时才进行渲染
         """
         if current_item is not None:
             self.current_item = current_item
@@ -352,9 +348,8 @@ class ProgressBar(t.Generic[V]):
         self.finished = True
 
     def generator(self) -> cabc.Iterator[V]:
-        """Return a generator which yields the items added to the bar
-        during construction, and updates the progress bar *after* the
-        yielded block returns.
+        """
+        返回一个生成器，该生成器会产出在构建过程中添加到进度条中的项目，并在产出的块返回后更新进度条
         """
         # WARNING: the iterator interface for `ProgressBar` relies on
         # this and only works because this is a simple generator which
@@ -399,7 +394,7 @@ class MaybeStripAnsi(io.TextIOWrapper):
 def _pager_contextmanager(
     color: bool | None = None,
 ) -> t.ContextManager[tuple[t.BinaryIO | t.TextIO, str, bool]]:
-    """Decide what method to use for paging through text."""
+    """决定使用哪种方法来翻页查看文本"""
     stdout = _default_text_stdout()
 
     # There are no standard streams attached to write to. For example,
@@ -429,11 +424,12 @@ def _pager_contextmanager(
 
 @contextlib.contextmanager
 def get_pager_file(color: bool | None = None) -> t.Generator[t.TextIO, None, None]:
-    """Context manager.
-    Yields a writable file-like object which can be used as an output pager.
+    """
+    上下文管理器。生成一个可写的类文件对象，可用作输出分页器。
+
     .. versionadded:: 8.4
-    :param color: controls if the pager supports ANSI colors or not.  The
-                  default is autodetection.
+
+    :param color: 控制分页器是否支持 ANSI 颜色。默认设置为自动检测。
     """
     with _pager_contextmanager(color=color) as (stream, encoding, color):
         # Split streams by capabilities rather than the abstract TextIO /
@@ -455,16 +451,13 @@ def get_pager_file(color: bool | None = None) -> t.Generator[t.TextIO, None, Non
 def _pipepager(
     cmd_parts: list[str], color: bool | None = None
 ) -> t.Iterator[tuple[t.BinaryIO | t.TextIO, str, bool]]:
-    """Page through text by feeding it to another program.
+    """通过将文本传递给另一个程序来翻页显示
 
-    Invokes the pager via :class:`subprocess.Popen` with an ``argv`` list
-    produced by :func:`shlex.split`. The command is resolved to an absolute
-    path with :func:`shutil.which` as recommended by the
-    :mod:`subprocess` docs for Windows compatibility.
+    该方法通过 `:class:`subprocess.Popen` 调用分页器，并使用 `:func:`shlex.split` 生成的 `argv` 列表。
 
-    Invoking a pager through this might support colors: if piping to
-    ``less`` and the user hasn't decided on colors, ``LESS=-R`` is set
-    automatically.
+    为了确保与 Windows 的兼容性，命令会使用 `:func:`shutil.which` 解析为绝对路径，这是 `:mod:`subprocess` 文档中的推荐做法
+
+    通过此方法调用分页器可能支持颜色显示：如果将输出重定向到 `less` 且用户尚未设置颜色选项，会自动设置 `LESS=-R`
     """
     # Split the command into the invoked CLI and its parameters.
     if not cmd_parts:
@@ -559,12 +552,11 @@ def _pipepager(
 def _tempfilepager(
     cmd_parts: list[str], color: bool | None = None
 ) -> t.Iterator[tuple[t.BinaryIO | t.TextIO, str, bool]]:
-    """Page through text by invoking a program on a temporary file.
+    """通过调用程序对临时文件中的文本进行分页浏览。
 
-    Used as the primary pager strategy on Windows (where piping to
-    ``more`` adds spurious ``\\r\\n``), and as a fallback on other
-    platforms. The command is resolved to an absolute path with
-    :func:`shutil.which`.
+    在 Windows 上用作主要的分页策略（因为通过管道传递给 ``more`` 会添加多余的 ``\\r\\n``），在其他平台上则作为备用方案。
+
+    该命令会使用 :func:`shutil.which` 解析为绝对路径。
     """
     # Split the command into the invoked CLI and its parameters.
     if not cmd_parts:
@@ -625,9 +617,10 @@ class _SkipClose:
 def _nullpager(
     stream: t.TextIO, color: bool | None = None
 ) -> t.Iterator[tuple[t.TextIO, str, bool]]:
-    """Simply print unformatted text. This is the ultimate fallback. Don't close the
-    output stream in this case, since it's coming from elsewhere rather than our
-    internal helpers.
+    """
+    直接打印未格式化的文本。
+
+    这是最终的备用方案。在这种情况下不要关闭输出流，因为数据来自其他地方，而不是我们的内部辅助程序。
     """
     encoding = get_best_encoding(stream)
 
@@ -668,7 +661,7 @@ class Editor:
         return "vi"
 
     def edit_files(self, filenames: cabc.Iterable[str]) -> None:
-        """Open files in the user's editor."""
+        """在用户的编辑器中打开文件"""
         import shlex
         import subprocess
 

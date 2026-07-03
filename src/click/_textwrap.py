@@ -9,11 +9,10 @@ from ._compat import term_len
 
 
 def _truncate_visible(text: str, n: int) -> str:
-    """Return the longest prefix of ``text`` containing at most ``n`` visible
-    characters.
+    """
+    返回``text``中最长的前缀，该前缀最多包含``n``个可见字符。
 
-    ANSI escape sequences inside the prefix are kept intact and do not count
-    toward the visible width. A cut is never placed inside an escape sequence.
+    前缀内的 ANSI 转义序列保持不变，不计入可见宽度。转义序列内部永远不会被插入截断标记。
     """
     if n <= 0:
         return ""
@@ -36,13 +35,12 @@ def _truncate_visible(text: str, n: int) -> str:
 
 
 class TextWrapper(textwrap.TextWrapper):
-    """``textwrap.TextWrapper`` variant that measures widths by visible
-    character count.
+    """
+    ``textwrap.TextWrapper`` 的一个变体，它通过可见字符数来计算宽度。
 
-    ANSI escape sequences embedded in chunks, indents, or the placeholder are
-    excluded from the width budget. Without this, styled help text (a styled
-    ``Usage:`` prefix, a colorized option name, ...) would be wrapped earlier
-    than its visible length warrants and tokens would split mid-word.
+    嵌入在块、缩进或占位符中的 ANSI 转义序列不计入宽度预算。
+
+    如果没有这个特性，样式化的帮助文本（例如带有样式的 ``Usage:`` 前缀、颜色化的选项名称等）可能会在其实际可见长度之前被换行，并且标记可能会在单词中间被拆分。
     """
 
     def _handle_long_word(
@@ -66,14 +64,10 @@ class TextWrapper(textwrap.TextWrapper):
     def _wrap_chunks(self, chunks: list[str]) -> list[str]:
         """Wrap chunks counting widths in visible characters.
 
-        Mirrors the algorithm of :meth:`textwrap.TextWrapper._wrap_chunks`
-        with every width measurement routed through
-        :func:`click._compat.term_len` instead of :func:`len`, so ANSI escape
-        bytes in chunks, indents, or the placeholder do not inflate the count.
+        Mirrors the algorithm of :meth:`textwrap.TextWrapper._wrap_chunks` with every width measurement routed through :func:`click._compat.term_len` instead of :func:`len`, so ANSI escape bytes in chunks, indents, or the placeholder do not inflate the count.
 
         .. seealso::
-            :class:`textwrap.TextWrapper` in the Python standard library documentation:
-            https://docs.python.org/3/library/textwrap.html#textwrap.TextWrapper
+            :class:`textwrap.TextWrapper` in the Python standard library documentation: https://docs.python.org/3/library/textwrap.html#textwrap.TextWrapper
 
             Reference implementation in CPython:
             https://github.com/python/cpython/blob/main/Lib/textwrap.py

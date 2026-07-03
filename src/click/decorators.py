@@ -26,8 +26,8 @@ FC = t.TypeVar("FC", bound="_AnyCallable | Command")
 
 
 def pass_context(f: t.Callable[te.Concatenate[Context, P], R]) -> t.Callable[P, R]:
-    """Marks a callback as wanting to receive the current context
-    object as first argument.
+    """
+    将回调标记为希望接收当前上下文对象作为第一个参数
     """
 
     def new_func(*args: P.args, **kwargs: P.kwargs) -> R:
@@ -167,37 +167,26 @@ def command(
     cls: type[CmdType] | None = None,
     **attrs: t.Any,
 ) -> Command | t.Callable[[_AnyCallable], Command | CmdType]:
-    r"""Creates a new :class:`Command` and uses the decorated function as
-    callback.  This will also automatically attach all decorated
-    :func:`option`\s and :func:`argument`\s as parameters to the command.
+    r"""
+    创建一个新的 :class:`Command` 并将装饰后的函数作为回调函数使用。此操作还会自动将所有装饰的 :func:`option` 和 :func:`argument` 作为参数附加到命令上。
 
-    The name of the command defaults to the name of the function, converted to
-    lowercase, with underscores ``_`` replaced by dashes ``-``, and the suffixes
-    ``_command``, ``_cmd``, ``_group``, and ``_grp`` are removed. For example,
-    ``init_data_command`` becomes ``init-data``.
+    命令的名称默认为函数的名称，转换为小写，并将下划线 ``_`` 替换为短横线 ``-``，同时移除后缀 ``_command``、``_cmd``、``_group`` 和 ``_grp``。例如，``init_data_command`` 会变成 ``init-data``。
 
-    All keyword arguments are forwarded to the underlying command class.
-    For the ``params`` argument, any decorated params are appended to
-    the end of the list.
+    所有关键字参数都会转发给底层的命令类。对于 ``params`` 参数，任何装饰的参数都会被追加到列表末尾。
 
-    Once decorated the function turns into a :class:`Command` instance
-    that can be invoked as a command line utility or be attached to a
-    command :class:`Group`.
+    一旦函数被装饰，它就会变成一个 :class:`Command` 实例，可以作为命令行工具调用，也可以附加到命令 :class:`Group` 上。
 
-    :param name: The name of the command. Defaults to modifying the function's
-        name as described above.
-    :param cls: The command class to create. Defaults to :class:`Command`.
+    :param name: 命令的名称。默认情况下，将按照上述描述修改函数的名称
+    :param cls: 要创建的命令类。默认为：class:`Command`
 
     .. versionchanged:: 8.2
-        The suffixes ``_command``, ``_cmd``, ``_group``, and ``_grp`` are
-        removed when generating the name.
+        在生成名称时，后缀``_command``、``_cmd``、``_group``和``_grp``会被移除。
 
     .. versionchanged:: 8.1
-        This decorator can be applied without parentheses.
+        该装饰器可以不带括号直接应用。
 
     .. versionchanged:: 8.1
-        The ``params`` argument can be used. Decorated params are
-        appended to the end of the list.
+        可以使用 ``params`` 参数。被装饰的参数会附加到列表的末尾。
     """
 
     func: t.Callable[[_AnyCallable], t.Any] | None = None
@@ -292,12 +281,11 @@ def group(
     cls: type[GrpType] | None = None,
     **attrs: t.Any,
 ) -> Group | t.Callable[[_AnyCallable], Group | GrpType]:
-    """Creates a new :class:`Group` with a function as callback.  This
-    works otherwise the same as :func:`command` just that the `cls`
-    parameter is set to :class:`Group`.
+    """
+    创建一个新的 :class:`Group`，并将一个函数作为回调。其工作方式与 :func:`command` 相同，只是 `cls` 参数被设置为 :class:`Group`
 
     .. versionchanged:: 8.1
-        This decorator can be applied without parentheses.
+        这个装饰器可以不带括号直接使用。
     """
     if cls is None:
         cls = t.cast("type[GrpType]", Group)
@@ -349,20 +337,16 @@ def argument(
 def option(
     *param_decls: str, cls: type[Option] | None = None, **attrs: t.Any
 ) -> t.Callable[[FC], FC]:
-    """Attaches an option to the command.  All positional arguments are
-    passed as parameter declarations to :class:`Option`; all keyword
-    arguments are forwarded unchanged (except ``cls``).
-    This is equivalent to creating an :class:`Option` instance manually
-    and attaching it to the :attr:`Command.params` list.
+    """
+    将一个选项附加到命令。所有位置参数作为参数声明传递给 :class:`Option`；所有关键字参数原样转发（``cls`` 除外）。
 
-    For the default option class, refer to :class:`Option` and
-    :class:`Parameter` for descriptions of parameters.
+    这等效于手动创建一个 :class:`Option` 实例并将其附加到 :attr:`Command.params` 列表。
 
-    :param cls: the option class to instantiate.  This defaults to
-                :class:`Option`.
-    :param param_decls: Passed as positional arguments to the constructor of
-        ``cls``.
-    :param attrs: Passed as keyword arguments to the constructor of ``cls``.
+    有关默认选项类的信息，请参阅 :class:`Option` 和 :class:`Parameter` 以获取参数说明。
+
+    :param cls: 要实例化的选项类。默认为 :class:`Option`
+    :param param_decls: 作为位置参数传递给 ``cls`` 的构造函数
+    :param attrs: 作为关键字参数传递给 ``cls`` 的构造函数
     """
     if cls is None:
         cls = Option

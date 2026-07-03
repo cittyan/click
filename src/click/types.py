@@ -35,27 +35,20 @@ class ParamTypeInfoDict(t.TypedDict):
 
 
 class ParamType(t.Generic[ParamTypeValue], abc.ABC):
-    """Represents the type of a parameter. Validates and converts values
-    from the command line or Python into the correct type.
+    """
+    表示参数的类型。它将命令行或 Python 中的值验证并转换为正确的类型。
 
-    To implement a custom type, subclass and implement at least the
-    following:
+    要实现自定义类型，需继承基类并至少实现以下内容：
 
-    -   The :attr:`name` class attribute must be set.
-    -   Calling an instance of the type with ``None`` must return
-        ``None``. This is already implemented by default.
-    -   :meth:`convert` must convert string values to the correct type.
-    -   :meth:`convert` must accept values that are already the correct
-        type.
-    -   It must be able to convert a value if the ``ctx`` and ``param``
-        arguments are ``None``. This can occur when converting prompt
-        input.
+    -   必须设置 :attr:`name` 类属性
+    -   使用 ``None`` 调用该类型的实例必须返回 ``None``。此功能默认已实现
+    -   :meth:`convert` 必须将字符串值转换为正确的类型
+    -   :meth:`convert` 必须接受已经是正确类型的值
+    -   当 ``ctx`` 和 ``param`` 参数为 ``None`` 时，必须能够转换值。这在转换提示输入时可能发生
 
     .. versionchanged:: 8.4.0
-        Now a generic abstract base class. Parameterize with the
-        converted value type (``ParamType[int]`` for an integer-returning
-        type) so that :meth:`convert` and downstream consumers carry the
-        narrowed return type.
+        现在是一个通用的抽象基类。通过参数化转换后的值类型（对于返回整数的类型使用``ParamType[int]``），
+        以便 :meth:`convert` 和下游消费者能够携带更具体的返回类型。
     """
 
     is_composite: t.ClassVar[bool] = False

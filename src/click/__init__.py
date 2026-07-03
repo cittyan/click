@@ -1,8 +1,6 @@
 """
-Click is a simple Python module inspired by the stdlib optparse to make
-writing command line scripts fun. Unlike other modules, it's based
-around a simple API that does not come with too much magic and is
-composable.
+Click 是一个受标准库 optparse 启发的简单 Python 模块，旨在让编写命令行脚本变得有趣。
+与其他模块不同，它围绕一个简单的 API 构建，不包含过多复杂功能，并且具有可组合性。
 """
 
 from __future__ import annotations

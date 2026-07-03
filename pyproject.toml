@@ -209,12 +209,12 @@ commands = [
 ]
 
 [tool.tox.env.docs]
-description = "build docs"
+description = "构建文档"
 dependency_groups = ["docs"]
 commands = [["sphinx-build", "-E", "-W", "-b", "dirhtml", "docs", "docs/_build/dirhtml"]]
 
 [tool.tox.env.docs-auto]
-description = "continuously rebuild docs and start a local server"
+description = "持续重建文档并启动本地服务器"
 dependency_groups = ["docs", "docs-auto"]
 commands = [["sphinx-autobuild", "-W", "-b", "dirhtml", "--watch", "src", "docs", "docs/_build/dirhtml"]]
 

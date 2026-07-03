@@ -39,7 +39,7 @@ def _make_text_stream(
 
 
 def is_ascii_encoding(encoding: str) -> bool:
-    """Checks if a given encoding is ascii."""
+    """检查给定的编码是否为 ASCII"""
     try:
         return codecs.lookup(encoding).name == "ascii"
     except LookupError:
@@ -47,7 +47,7 @@ def is_ascii_encoding(encoding: str) -> bool:
 
 
 def get_best_encoding(stream: t.IO[t.Any]) -> str:
-    """Returns the default stream encoding if not found."""
+    """如果未找到，则返回默认流编码"""
     rv = getattr(stream, "encoding", None) or sys.getdefaultencoding()
     if is_ascii_encoding(rv):
         return "utf-8"
@@ -81,13 +81,10 @@ class _NonClosingTextIOWrapper(io.TextIOWrapper):
 
 
 class _FixupStream:
-    """The new io interface needs more from streams than streams
-    traditionally implement.  As such, this fix-up code is necessary in
-    some circumstances.
+    """
+    新的 IO 接口对流的要求比传统流实现的要更多。因此，在某些情况下，这种修复代码是必要的。
 
-    The forcing of readable and writable flags are there because some tools
-    put badly patched objects on sys (one such offender are certain version
-    of jupyter notebook).
+    强制设置可读和可写标志的原因是，某些工具会将修补不当的对象放在 sys 上（某些版本的 Jupyter Notebook 就是这样的“罪魁祸首”之一）。
     """
 
     def __init__(
@@ -208,7 +205,7 @@ def _find_binary_writer(stream: t.IO[t.Any]) -> t.BinaryIO | None:
 
 
 def _stream_is_misconfigured(stream: t.TextIO) -> bool:
-    """A stream is misconfigured if its encoding is ASCII."""
+    """如果流的编码为 ASCII，则该流配置错误"""
     # If the stream does not have an encoding set, we assume it's set
     # to ASCII.  This appears to happen in certain unittest
     # environments.  It's not quite clear what the correct behavior is
@@ -217,9 +214,8 @@ def _stream_is_misconfigured(stream: t.TextIO) -> bool:
 
 
 def _is_compat_stream_attr(stream: t.TextIO, attr: str, value: str | None) -> bool:
-    """A stream attribute is compatible if it is equal to the
-    desired value or the desired value is unset and the attribute
-    has a value.
+    """
+    一个流属性是兼容的，如果它等于期望值，或者期望值未设置且该属性具有值
     """
     stream_value = getattr(stream, attr, None)
     return stream_value == value or (value is None and stream_value is not None)
@@ -228,8 +224,8 @@ def _is_compat_stream_attr(stream: t.TextIO, attr: str, value: str | None) -> bo
 def _is_compatible_text_stream(
     stream: t.TextIO, encoding: str | None, errors: str | None
 ) -> bool:
-    """Check if a stream's encoding and errors attributes are
-    compatible with the desired values.
+    """
+    检查流的编码和错误属性是否与所需值兼容
     """
     return _is_compat_stream_attr(
         stream, "encoding", encoding
@@ -362,7 +358,7 @@ def _wrap_io_open(
     encoding: str | None,
     errors: str | None,
 ) -> t.IO[t.Any]:
-    """Handles not passing ``encoding`` and ``errors`` in binary mode."""
+    """在二进制模式下不传递 ``encoding`` 和 ``errors`` 参数"""
     if "b" in mode:
         return open(file, mode)
 
@@ -397,10 +393,8 @@ def open_stream(
     # Some usability stuff for atomic writes
     if "a" in mode:
         raise ValueError(
-            "Appending to an existing file is not supported, because that"
-            " would involve an expensive `copy`-operation to a temporary"
-            " file. Open the file in normal `w`-mode and copy explicitly"
-            " if that's what you're after."
+            "不支持向现有文件追加内容，因为这会涉及将数据复制到临时文件的昂贵操作。"
+            "如果你确实需要这样做，请以正常的 `w` 模式打开文件，然后显式地进行 `copy` 操作。"
         )
     if "x" in mode:
         raise ValueError("请改用 `overwrite` 参数")
@@ -525,8 +519,8 @@ if sys.platform.startswith("win") and WIN:
     _ansi_stream_wrappers: cabc.MutableMapping[t.TextIO, t.TextIO] = WeakKeyDictionary()
 
     def auto_wrap_for_ansi(stream: t.TextIO, color: bool | None = None) -> t.TextIO:
-        """Support ANSI color and style codes on Windows by wrapping a
-        stream with colorama.
+        """
+        通过使用 colorama 包装流，支持在 Windows 上使用 ANSI 颜色和样式代码
         """
         try:
             cached = _ansi_stream_wrappers.get(stream)
