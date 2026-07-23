@@ -237,11 +237,11 @@ def test_with_color_errors():
     runner = CliRunner()
 
     result = runner.invoke(cli)
-    assert result.output == "Error: Red error\n"
+    assert result.output == "错误: Red error\n"
     assert result.exception
 
     result = runner.invoke(cli, color=True)
-    assert result.output == f"Error: {click.style('Red error', fg='red')}\n"
+    assert result.output == f"错误: {click.style('Red error', fg='red')}\n"
     assert result.exception
 
 
@@ -549,7 +549,7 @@ def test_capture_invalid_mode():
 @pytest.mark.skipif(sys.platform != "win32", reason="Windows-only test")
 def test_capture_fd_windows_error():
     """fd capture raises ValueError on Windows."""
-    with pytest.raises(ValueError, match="not supported on Windows"):
+    with pytest.raises(ValueError, match="在 Windows 平台不支持"):
         CliRunner(capture="fd")
 
 

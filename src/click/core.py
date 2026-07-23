@@ -1138,7 +1138,7 @@ class Command:
                 opts.append(rv)
 
         if opts:
-            with formatter.section(_("Options")):
+            with formatter.section(_("选项")):
                 formatter.write_dl(opts)
 
     def format_epilog(self, ctx: Context, formatter: HelpFormatter) -> None:

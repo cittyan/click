@@ -215,7 +215,7 @@ def test_confirm_repeat(runner):
         "cli", params=[click.Option(["--a/--no-a"], default=None, prompt=True)]
     )
     result = runner.invoke(cli, input="\ny\n")
-    assert result.output == "A [y/n]: \nError: invalid input\nA [y/n]: y\n"
+    assert result.output == "A [y/n]: \n错误: 无效输入\nA [y/n]: y\n"
 
 
 @pytest.mark.skipif(WIN, reason="Different behavior on windows.")

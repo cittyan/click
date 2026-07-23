@@ -102,8 +102,8 @@ def test_get_context_objects_missing(runner):
     assert result.exception is not None
     assert isinstance(result.exception, RuntimeError)
     assert (
-        "Managed to invoke callback without a context object of type"
-        " 'Foo' existing" in str(result.exception)
+        "成功调用了回调函数，但不存在类型为"
+        " {object_type.__name__!r} 的上下文对象" in str(result.exception)
     )
 
 
@@ -176,9 +176,9 @@ def test_make_pass_meta_decorator(runner):
 
 def test_make_pass_meta_decorator_doc():
     pass_value = pass_meta_key("value")
-    assert "the 'value' key from :attr:`click.Context.meta`" in pass_value.__doc__
+    assert "键值对 'value' 来自 :attr:`click.Context.meta`" in pass_value.__doc__
     pass_value = pass_meta_key("value", doc_description="the test value")
-    assert "passes the test value" in pass_value.__doc__
+    assert "装饰器将 the test value" in pass_value.__doc__
 
 
 def test_hiding_of_unset_sentinel_in_callbacks():

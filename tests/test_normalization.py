@@ -39,8 +39,8 @@ def test_choice_normalization(runner):
     result = runner.invoke(cli, ["--method=meh"])
     assert result.exit_code == 2
     assert (
-        "Invalid value for '--method': 'meh' is not one of "
-        "'screaming_snake_case', 'snake_case', 'pascalcase', 'kebab-case'."
+        "'--method' 的值无效: 'meh' 不是 "
+        "'screaming_snake_case', 'snake_case', 'pascalcase', 'kebab-case' 其中之一"
     ) in result.output
 
     result = runner.invoke(cli, ["--help"])

@@ -253,56 +253,56 @@ def test_good_defaults_for_multiple(runner, multiple, nargs, default, expected):
             1,
             "Yo",
             None,
-            "Error: Invalid value for '-a': Value must be an iterable.",
+            "错误: '-a' 的值无效: Value must be an iterable.",
         ),
         (
             True,
             1,
             "",
             None,
-            "Error: Invalid value for '-a': Value must be an iterable.",
+            "错误: '-a' 的值无效: Value must be an iterable.",
         ),
         (
             True,
             1,
             True,
             None,
-            "Error: Invalid value for '-a': Value must be an iterable.",
+            "错误: '-a' 的值无效: Value must be an iterable.",
         ),
         (
             True,
             1,
             False,
             None,
-            "Error: Invalid value for '-a': Value must be an iterable.",
+            "错误: '-a' 的值无效: Value must be an iterable.",
         ),
         (
             True,
             1,
             12,
             None,
-            "Error: Invalid value for '-a': Value must be an iterable.",
+            "错误: '-a' 的值无效: Value must be an iterable.",
         ),
         (
             True,
             1,
             7.9,
             None,
-            "Error: Invalid value for '-a': Value must be an iterable.",
+            "错误: '-a' 的值无效: Value must be an iterable.",
         ),
         (
             False,
             2,
             42,
             None,
-            "Error: Invalid value for '-a': Value must be an iterable.",
+            "错误: '-a' 的值无效: Value must be an iterable.",
         ),
         (
             True,
             2,
             ["test string which is not a list in the list"],
             None,
-            "Error: Invalid value for '-a': Value must be an iterable.",
+            "错误: '-a' 的值无效: Value must be an iterable.",
         ),
         # Multiple options, each with 2 args, but with wrong length.
         (
@@ -310,14 +310,14 @@ def test_good_defaults_for_multiple(runner, multiple, nargs, default, expected):
             2,
             (1,),
             None,
-            "Error: Invalid value for '-a': Value must be an iterable.",
+            "错误: '-a' 的值无效: Value must be an iterable.",
         ),
         (
             True,
             2,
             (1, 2, 3),
             None,
-            "Error: Invalid value for '-a': Value must be an iterable.",
+            "错误: '-a' 的值无效: Value must be an iterable.",
         ),
         (
             True,
@@ -357,15 +357,15 @@ def test_good_defaults_for_multiple(runner, multiple, nargs, default, expected):
             2,
             [1],
             None,
-            "Error: Invalid value for '-a': Takes 2 values but 1 was given.",
+            "错误: '-a' 的: Takes 2 values but 1 was given.",
         ),
         (
             True,
             2,
             [[1]],
             ValueError,
-            r"'nargs' must be 1 \(or None\) for type <click\.types\.Tuple object at "
-            r"0x[0-9A-Fa-f]+>, but it was 2\.",
+            r"对于类型 <click\.types\.Tuple object at "
+            r"0x[0-9A-Fa-f]+>，'nargs' 必须为 1\(或 None\)，但实际为 2。",
         ),
     ],
 )
@@ -550,7 +550,7 @@ def test_boolean_envvar_bad_values(runner, value):
     result = runner.invoke(cli, [], env={"SHOUT": value})
     assert result.exit_code == 2
     assert (
-        f"Invalid value for '--shout': {value!r} is not a valid boolean."
+        f"'--shout' 的值无效: {value!r} 不是一个有效的布尔值"
         in result.output
     )
 
@@ -790,7 +790,7 @@ def test_custom_validation(runner):
         click.echo(foo)
 
     result = runner.invoke(cmd, ["--foo", "-1"])
-    assert "Invalid value for '--foo': Value needs to be positive" in result.output
+    assert "'--foo' 的值无效: Value needs to be positive" in result.output
 
     result = runner.invoke(cmd, ["--foo", "42"])
     assert result.output == "42\n"
@@ -809,7 +809,7 @@ def test_callback_validates_prompt(runner, monkeypatch):
         click.echo(a)
 
     result = runner.invoke(cli, input="-12\n60\n")
-    assert result.output == "A: -12\nError: should be positive\nA: 60\n60\n"
+    assert result.output == "A: -12\n错误: should be positive\nA: 60\n60\n"
 
 
 def test_winstyle_options(runner):
@@ -826,7 +826,7 @@ def test_winstyle_options(runner):
     assert result.output == "False\n"
     result = runner.invoke(cmd, ["/?"], help_option_names=["/?"])
     assert "/debug; /no-debug  Enables or disables debug mode." in result.output
-    assert "/?                 Show this message and exit." in result.output
+    assert "/?                 显示帮助信息并退出" in result.output
 
 
 def test_legacy_options(runner):
@@ -867,7 +867,7 @@ def test_required_option(value, expect_missing, processed_value):
     if expect_missing:
         with pytest.raises(click.MissingParameter) as excinfo:
             argument.process_value(ctx, value)
-        assert str(excinfo.value) == "Missing parameter: a"
+        assert str(excinfo.value) == "缺少形参: a"
 
     else:
         value = argument.process_value(ctx, value)
@@ -880,7 +880,7 @@ def test_missing_required_flag(runner):
     )
     result = runner.invoke(cli)
     assert result.exit_code == 2
-    assert "Error: Missing option '--on'." in result.output
+    assert "错误: 缺少选项 '--on'" in result.output
 
 
 def test_missing_choice(runner):
@@ -891,9 +891,9 @@ def test_missing_choice(runner):
 
     result = runner.invoke(cmd)
     assert result.exit_code == 2
-    error, separator, choices = result.output.partition("Choose from")
-    assert "Error: Missing option '--foo'. " in error
-    assert "Choose from" in separator
+    error, separator, choices = result.output.partition("可选值")
+    assert "错误: 缺少选项 '--foo'. " in error
+    assert "可选值" in separator
     assert "foo" in choices
     assert "bar" in choices
 
@@ -904,21 +904,21 @@ def test_missing_envvar(runner):
     )
     result = runner.invoke(cli)
     assert result.exit_code == 2
-    assert "Error: Missing option '--foo'." in result.output
+    assert "错误: 缺少选项 '--foo'." in result.output
     cli = click.Command(
         "cli",
         params=[click.Option(["--foo"], envvar="bar", show_envvar=True, required=True)],
     )
     result = runner.invoke(cli)
     assert result.exit_code == 2
-    assert "Error: Missing option '--foo' (env var: 'bar')." in result.output
+    assert "错误: 缺少选项 '--foo' (env var: 'bar')." in result.output
 
     cli = click.Command(
         "cli", params=[click.Option(["--foo"], show_envvar=True, required=True)]
     )
     result = runner.invoke(cli)
     assert result.exit_code == 2
-    assert "Error: Missing option '--foo'." in result.output
+    assert "错误: 缺少选项 '--foo'." in result.output
 
 
 def test_case_insensitive_choice(runner):
@@ -1094,16 +1094,16 @@ def test_option_custom_class_reusable(runner):
     (
         (
             ("-h", "--help"),
-            "  -h, --help  Show this message and exit.\n",
+            "  -h, --help  显示帮助信息并退出\n",
         ),
         (
             ("-h",),
-            "  -h      Show this message and exit.\n"
-            "  --help  Show this message and exit.\n",
+            "  -h      显示帮助信息并退出\n"
+            "  --help  显示帮助信息并退出\n",
         ),
         (
             ("--help",),
-            "  --help  Show this message and exit.\n",
+            "  --help  显示帮助信息并退出\n",
         ),
     ),
 )
@@ -1193,7 +1193,7 @@ def test_option_names(runner, option_args, expected):
 
 
 def test_flag_duplicate_names(runner):
-    with pytest.raises(ValueError, match="cannot use the same flag for true/false"):
+    with pytest.raises(ValueError, match="不能使用相同的标志来表示真/假"):
         click.Option(["--foo/--foo"], default=False)
 
 
@@ -1542,7 +1542,7 @@ def test_invalid_flag_definition(runner, args, opts):
 
     result = runner.invoke(cmd, args)
     assert (
-        "Error: Invalid value for '--foo': 'foo' is not a valid boolean"
+        "错误: '--foo' 的值无效: 'foo' 不是一个有效的布尔值"
         in result.output
     )
 
@@ -1740,8 +1740,8 @@ def test_flag_auto_detection(
 @pytest.mark.parametrize(
     ("kwargs", "message"),
     [
-        ({"count": True, "multiple": True}, "'count' is not valid with 'multiple'."),
-        ({"count": True, "is_flag": True}, "'count' is not valid with 'is_flag'."),
+        ({"count": True, "multiple": True}, "'count' 不能与 'multiple' 一起使用"),
+        ({"count": True, "is_flag": True}, "'count' 不能与 'is_flag' 一起使用"),
     ],
 )
 def test_invalid_flag_combinations(runner, kwargs, message):
@@ -1848,8 +1848,8 @@ def test_choice_usage_rendering(runner, choices, metavar):
     for cli in (cli_with_choices, cli_without_choices):
         result = runner.invoke(cli, ["-g", "random"])
         assert (
-            "\n\nError: Invalid value for '-g': 'random' is not one of "
-            f"{', '.join(map(repr, display_values))}.\n" in result.stderr
+            "\n\n错误: '-g' 的值无效: 'random' 不是 "
+            f"{', '.join(map(repr, display_values))} 其中之一\n" in result.stderr
         )
         assert not result.stdout
         assert result.exit_code == 2
@@ -1964,11 +1964,11 @@ class EnumSentinel(enum.Enum):
         # Config has no default value, and no flag value, so it requires an argument.
         (
             ["--config"],
-            re.compile(re.escape("Error: Option '--config' requires an argument.\n")),
+            re.compile(re.escape("错误: Option '--config' requires an argument.\n")),
         ),
         (
             ["--no-config", "--config"],
-            re.compile(re.escape("Error: Option '--config' requires an argument.\n")),
+            re.compile(re.escape("错误: Option '--config' requires an argument.\n")),
         ),
         # Passing --no-config defaults to the sentinel value because of the flag_value,
         # and then the custom type receives that sentinel and returns a message.
@@ -1979,41 +1979,41 @@ class EnumSentinel(enum.Enum):
         (
             ["--no-config", "foo.conf"],
             re.compile(
-                r"Usage: main \[OPTIONS\]\n"
-                r"Try 'main --help' for help.\n"
+                r"用法: main \[选项\]\n"
+                r"尝试输入 'main --help' 获取帮助\n"
                 r"\n"
-                r"Error: Got unexpected extra argument (.+)\n"
+                r"错误: 遇到意外的额外参数 (.+)\n"
             ),
         ),
         # Passing --config with an argument that does not exist raises an error.
         (
             ["--config", "random-file.conf"],
             re.compile(
-                r"Usage: main \[OPTIONS\]\n"
-                r"Try 'main --help' for help.\n"
+                r"用法: main \[选项\]\n"
+                r"尝试输入 'main --help' 获取帮助\n"
                 r"\n"
-                r"Error: Invalid value for '-c' / '--config': "
-                r"File 'random-file.conf' does not exist.\n"
+                r"错误: '-c' / '--config' 的值无效: "
+                r"File 'random-file.conf' 不存在\n"
             ),
         ),
         (
             ["--config", "--no-config"],
             re.compile(
-                r"Usage: main \[OPTIONS\]\n"
-                r"Try 'main --help' for help.\n"
+                r"用法: main \[选项\]\n"
+                r"尝试输入 'main --help' 获取帮助\n"
                 r"\n"
-                r"Error: Invalid value for '-c' / '--config': "
-                r"File '--no-config' does not exist.\n"
+                r"错误: '-c' / '--config' 的值无效: "
+                r"File '--no-config' 不存在\n"
             ),
         ),
         (
             ["--config", "--no-config", "foo.conf"],
             re.compile(
-                r"Usage: main \[OPTIONS\]\n"
-                r"Try 'main --help' for help.\n"
+                r"用法: main \[选项\]\n"
+                r"尝试输入 'main --help' 获取帮助\n"
                 r"\n"
-                r"Error: Invalid value for '-c' / '--config': "
-                r"File '--no-config' does not exist.\n"
+                r"错误: '-c' / '--config' 的值无效: "
+                r"File '--no-config' 不存在\n"
             ),
         ),
         # --config is passed last and overrides the --no-config option.
@@ -2118,7 +2118,7 @@ class Class2:
         (
             {"type": EngineType, "default": EngineType.OSS},
             ["--pro"],
-            re.compile(re.escape("Error: Option '--pro' requires an argument.\n")),
+            re.compile(re.escape("错误: Option '--pro' requires an argument.\n")),
         ),
         ({"type": EngineType, "default": EngineType.OSS}, [], EngineType.OSS),
         # If a flag value is set, it is returned instead of the default value.
@@ -3309,7 +3309,7 @@ def test_flag_group_competition_duplicate_option_name(runner):
     result = runner.invoke(cli, [])
     assert result.exit_code == 1
     assert isinstance(result.exception, UserWarning)
-    assert "used more than once" in str(result.exception)
+    assert "参数 --xyz 被使用了多次" in str(result.exception)
 
 
 @pytest.mark.parametrize(

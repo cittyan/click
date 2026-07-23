@@ -98,7 +98,7 @@ def test_auto_shorthelp(runner):
 def test_command_no_args_is_help(runner):
     result = runner.invoke(click.Command("test", no_args_is_help=True))
     assert result.exit_code == 2
-    assert "Show this message and exit." in result.output
+    assert "显示帮助信息并退出" in result.output
 
 
 def test_default_maps(runner):
@@ -121,9 +121,9 @@ def test_default_maps(runner):
     ("args", "exit_code", "expect"),
     [
         (["obj1"], 2, "错误: 缺少命令"),
-        (["obj1", "--help"], 0, "Show this message and exit."),
+        (["obj1", "--help"], 0, "显示帮助信息并退出"),
         (["obj1", "move"], 0, "obj=obj1\nmove\n"),
-        ([], 2, "Show this message and exit."),
+        ([], 2, "显示帮助信息并退出"),
     ],
 )
 def test_group_with_args(runner, args, exit_code, expect):

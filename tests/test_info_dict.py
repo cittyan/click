@@ -19,7 +19,7 @@ HELP_OPTION = (
         "multiple": False,
         "default": False,
         "envvar": None,
-        "help": "Show this message and exit.",
+        "help": "显示帮助信息并退出",
         "prompt": None,
         "is_flag": True,
         "flag_value": True,

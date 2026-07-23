@@ -48,7 +48,7 @@ def test_basic_functionality(runner):
         "  And this is a paragraph that will be rewrapped again.",
         "",
         "Options:",
-        "  --help  Show this message and exit.",
+        "  --help  显示帮助信息并退出",
     ]
 
 
@@ -76,14 +76,13 @@ def test_wrapping_long_options_strings(runner):
     result = runner.invoke(cli, ["a-very-long", "command", "--help"], terminal_width=54)
     assert not result.exception
     assert result.output.splitlines() == [
-        "用法: cli a-very-long command [选项] FIRST SECOND",
-        "                               THIRD FOURTH FIFTH",
-        "                               SIXTH",
+        "用法: cli a-very-long command [选项] FIRST SECOND THIRD",
+        "                            FOURTH FIFTH SIXTH",
         "",
         "  A command.",
         "",
         "Options:",
-        "  --help  Show this message and exit.",
+        "  --help  显示帮助信息并退出",
     ]
 
 
@@ -112,13 +111,12 @@ def test_wrapping_long_command_name(runner):
     assert not result.exception
     assert result.output.splitlines() == [
         "用法: cli a-very-very-very-long command ",
-        "           [选项] FIRST SECOND THIRD FOURTH FIFTH",
-        "           SIXTH",
+        "        [选项] FIRST SECOND THIRD FOURTH FIFTH SIXTH",
         "",
         "  A command.",
         "",
         "Options:",
-        "  --help  Show this message and exit.",
+        "  --help  显示帮助信息并退出",
     ]
 
 
@@ -134,14 +132,14 @@ def test_formatting_empty_help_lines(runner):
     result = runner.invoke(cli, ["--help"])
     assert not result.exception
     assert result.output.splitlines() == [
-        "Usage: cli [OPTIONS]",
+        "用法: cli [选项]",
         "",
         "  Top level command",
         "",
         "",
         "",
         "Options:",
-        "  --help  Show this message and exit.",
+        "  --help  显示帮助信息并退出",
     ]
 
 
@@ -154,10 +152,10 @@ def test_formatting_usage_error(runner):
     result = runner.invoke(cmd, [])
     assert result.exit_code == 2
     assert result.output.splitlines() == [
-        "Usage: cmd [OPTIONS] ARG",
-        "Try 'cmd --help' for help.",
+        "用法: cmd [选项] ARG",
+        "尝试输入 'cmd --help' 获取帮助",
         "",
-        "Error: Missing argument 'ARG'.",
+        "错误: 缺少参数 'ARG'.",
     ]
 
 
@@ -175,10 +173,10 @@ def test_formatting_usage_error_metavar_missing_arg(runner):
     result = runner.invoke(cmd, [])
     assert result.exit_code == 2
     assert result.output.splitlines() == [
-        "Usage: cmd [OPTIONS] metavar",
-        "Try 'cmd --help' for help.",
+        "用法: cmd [选项] metavar",
+        "尝试输入 'cmd --help' 获取帮助",
         "",
-        "Error: Missing argument 'metavar'.",
+        "错误: 缺少参数 'metavar'.",
     ]
 
 
@@ -191,10 +189,10 @@ def test_formatting_usage_error_metavar_bad_arg(runner):
     result = runner.invoke(cmd, ["3.14"])
     assert result.exit_code == 2
     assert result.output.splitlines() == [
-        "Usage: cmd [OPTIONS] metavar",
-        "Try 'cmd --help' for help.",
+        "用法: cmd [选项] metavar",
+        "尝试输入 'cmd --help' 获取帮助",
         "",
-        "Error: Invalid value for 'metavar': '3.14' is not a valid integer.",
+        "错误: 'metavar' 的值无效: '3.14' 不是有效的 integer",
     ]
 
 
@@ -211,10 +209,10 @@ def test_formatting_usage_error_nested(runner):
     result = runner.invoke(cmd, ["foo"])
     assert result.exit_code == 2
     assert result.output.splitlines() == [
-        "Usage: cmd foo [OPTIONS] BAR",
-        "Try 'cmd foo --help' for help.",
+        "用法: cmd foo [选项] BAR",
+        "尝试输入 'cmd foo --help' 获取帮助",
         "",
-        "Error: Missing argument 'BAR'.",
+        "错误: 缺少参数 'BAR'.",
     ]
 
 
@@ -227,9 +225,9 @@ def test_formatting_usage_error_no_help(runner):
     result = runner.invoke(cmd, [])
     assert result.exit_code == 2
     assert result.output.splitlines() == [
-        "Usage: cmd [OPTIONS] ARG",
+        "用法: cmd [选项] ARG",
         "",
-        "Error: Missing argument 'ARG'.",
+        "错误: 缺少参数 'ARG'.",
     ]
 
 
@@ -242,10 +240,10 @@ def test_formatting_usage_custom_help(runner):
     result = runner.invoke(cmd, [])
     assert result.exit_code == 2
     assert result.output.splitlines() == [
-        "Usage: cmd [OPTIONS] ARG",
-        "Try 'cmd --man' for help.",
+        "用法: cmd [选项] ARG",
+        "尝试输入 'cmd --man' 获取帮助",
         "",
-        "Error: Missing argument 'ARG'.",
+        "错误: 缺少参数 'ARG'.",
     ]
 
 
@@ -253,18 +251,18 @@ def test_formatting_usage_custom_help(runner):
     ("help_names", "extra_options", "expected_hint"),
     [
         # No shadowing, longest name is picked.
-        (["-h", "--help"], [], "Try 'cli foo --help' for help."),
+        (["-h", "--help"], [], "尝试输入 'cli foo --help' 获取帮助"),
         # -h shadowed by a subcommand option, --help still available.
         (
             ["-h", "--help"],
             [click.option("--host", "-h")],
-            "Try 'cli foo --help' for help.",
+            "尝试输入 'cli foo --help' 获取帮助",
         ),
         # --help shadowed, -h still available.
         (
             ["-h", "--help"],
             [click.option("--help-file", "--help")],
-            "Try 'cli foo -h' for help.",
+            "尝试输入 'cli foo -h' 获取帮助",
         ),
         # Both names shadowed: no hint line at all.
         (
@@ -273,12 +271,12 @@ def test_formatting_usage_custom_help(runner):
             None,
         ),
         # Single custom help name, not shadowed.
-        (["--man"], [], "Try 'cli foo --man' for help."),
+        (["--man"], [], "尝试输入 'cli foo --man' 获取帮助"),
         # Three help names, one shadowed, longest survivor picked.
         (
             ["-h", "--help", "--info"],
             [click.option("--info-file", "--info")],
-            "Try 'cli foo --help' for help.",
+            "尝试输入 'cli foo --help' 获取帮助",
         ),
     ],
 )
@@ -331,7 +329,7 @@ def test_formatting_custom_type_metavar(runner):
         "用法: foo [选项] MY_TYPE",
         "",
         "Options:",
-        "  --help  Show this message and exit.",
+        "  --help  显示帮助信息并退出",
     ]
 
 
@@ -360,7 +358,7 @@ def test_truncating_docstring(runner):
         "  wrapped but it will be rewrapped.",
         "",
         "Options:",
-        "  --help  Show this message and exit.",
+        "  --help  显示帮助信息并退出",
     ]
 
 
@@ -380,7 +378,7 @@ def test_truncating_docstring_no_help(runner):
         "用法: cli [选项]",
         "",
         "Options:",
-        "  --help  Show this message and exit.",
+        "  --help  显示帮助信息并退出",
     ]
 
 
@@ -416,7 +414,7 @@ def test_global_show_default(runner):
         "",
         "Options:",
         "  -f TEXT  Output file name  [default: out.txt]",
-        "  --help   Show this message and exit.",
+        "  --help   显示帮助信息并退出",
     ]
 
 

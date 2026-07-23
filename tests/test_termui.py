@@ -193,14 +193,14 @@ def test_progressbar_format_progress_line_with_show_func(runner, test_item):
 
 
 def test_progressbar_init_exceptions(runner):
-    with pytest.raises(TypeError, match="iterable or length is required"):
+    with pytest.raises(TypeError, match="可迭代对象或长度参数"):
         click.progressbar()
 
 
 def test_progressbar_iter_outside_with_exceptions(runner):
     progress = click.progressbar(length=2)
 
-    with pytest.raises(RuntimeError, match="with block"):
+    with pytest.raises(RuntimeError, match="with 块"):
         iter(progress)
 
 
@@ -559,7 +559,7 @@ def test_editor_env_passed_through():
 def test_editor_failure_exception():
     with patch("subprocess.Popen") as mock_popen:
         mock_popen.return_value.wait.return_value = 1
-        with pytest.raises(click.ClickException, match="Editing failed"):
+        with pytest.raises(click.ClickException, match="编辑失败"):
             Editor(editor="vi").edit_files(["f.txt"])
 
 
@@ -1198,7 +1198,7 @@ def test_flag_value_prompt(
             expected_output += f"{expected_prompt}{input}\n"
 
             if expected is INVALID:
-                expected_output += "Error: invalid input\n"
+                expected_output += "错误: 无效输入\n"
 
             # The prompt is expected to be repeated.
             if expected in (REPEAT, INVALID):
@@ -1308,7 +1308,7 @@ class _ApostropheReprType(click.ParamType):
         pytest.param(
             click.INT,
             "bad",
-            "'***' is not a valid integer",
+            "'***' 不是有效的 integer",
             "bad",
             id="builtin-int-masks-repr-value",
         ),
@@ -1343,7 +1343,7 @@ class _ApostropheReprType(click.ParamType):
         pytest.param(
             click.IntRange(min=10, max=99),
             "1",
-            "is not in the range",
+            "不在 10<=x<=99 范围内",
             None,
             id="intrange-numeric-substring-falls-back-to-generic",
         ),
@@ -1439,7 +1439,7 @@ def test_hide_input_confirmation_prompt_mismatch_unaffected(runner):
 
     # First pair mismatches, second pair matches.
     result = runner.invoke(cli, input="firstone\nsecondone\nfinalone\nfinalone\n")
-    assert "Error: The two entered values do not match." in result.output
+    assert "错误: 输入的两个值不匹配" in result.output
     assert "firstone" not in result.output
     assert "secondone" not in result.output
     # Successful prompt echoes the final value back via the command body.

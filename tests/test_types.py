@@ -35,9 +35,9 @@ def test_range(type, value, expect):
 @pytest.mark.parametrize(
     ("type", "value", "expect"),
     [
-        (click.IntRange(0, 5), "6", "6 is not in the range 0<=x<=5."),
-        (click.IntRange(5), "4", "4 is not in the range x>=5."),
-        (click.IntRange(max=5), "6", "6 is not in the range x<=5."),
+        (click.IntRange(0, 5), "6", "6 不在 0<=x<=5 范围内"),
+        (click.IntRange(5), "4", "4 不在 x>=5 范围内"),
+        (click.IntRange(max=5), "6", "6 不在 x<=5 范围内"),
         (click.IntRange(0, 5, min_open=True), 0, "0<x<=5"),
         (click.IntRange(0, 5, max_open=True), 5, "0<=x<5"),
         (click.FloatRange(0.5, min_open=True), 0.5, "x>0.5"),
@@ -184,20 +184,20 @@ def test_path_surrogates(tmp_path, monkeypatch):
     type = click.Path(exists=True)
     path = pathlib.Path("\udcff")
 
-    with pytest.raises(click.BadParameter, match="'�' does not exist"):
+    with pytest.raises(click.BadParameter, match="Path '�' 不存在"):
         type.convert(path, None, None)
 
     type = click.Path(file_okay=False)
     path.touch()
 
-    with pytest.raises(click.BadParameter, match="'�' is a file"):
+    with pytest.raises(click.BadParameter, match="Directory '�' 是一个文件"):
         type.convert(path, None, None)
 
     path.unlink()
     type = click.Path(dir_okay=False)
     path.mkdir()
 
-    with pytest.raises(click.BadParameter, match="'�' is a directory"):
+    with pytest.raises(click.BadParameter, match="File '�' 是一个目录"):
         type.convert(path, None, None)
 
     path.rmdir()
@@ -213,21 +213,21 @@ def test_path_surrogates(tmp_path, monkeypatch):
     path.touch()
     type = click.Path(readable=True)
 
-    with pytest.raises(click.BadParameter, match="'�' is not readable"):
+    with pytest.raises(click.BadParameter, match="Path '�' 不可读"):
         with monkeypatch.context() as m:
             m.setattr(os, "access", no_access)
             type.convert(path, None, None)
 
     type = click.Path(readable=False, writable=True)
 
-    with pytest.raises(click.BadParameter, match="'�' is not writable"):
+    with pytest.raises(click.BadParameter, match="Path '�' 不可写"):
         with monkeypatch.context() as m:
             m.setattr(os, "access", no_access)
             type.convert(path, None, None)
 
     type = click.Path(readable=False, executable=True)
 
-    with pytest.raises(click.BadParameter, match="'�' is not executable"):
+    with pytest.raises(click.BadParameter, match="Path '�' 不可执行"):
         with monkeypatch.context() as m:
             m.setattr(os, "access", no_access)
             type.convert(path, None, None)
@@ -256,7 +256,7 @@ def test_file_surrogates(type, tmp_path):
 
 def test_file_error_surrogates():
     message = FileError(filename="\udcff").format_message()
-    assert message == "Could not open file '�': unknown error"
+    assert message == "无法打开文件 '�': 未知错误"
 
 
 @pytest.mark.skipif(
@@ -273,4 +273,4 @@ def test_invalid_path_with_esc_sequence():
 def test_choice_get_invalid_choice_message():
     choice = click.Choice(["a", "b", "c"])
     message = choice.get_invalid_choice_message("d", ctx=None)
-    assert message == "'d' is not one of 'a', 'b', 'c'."
+    assert message == "'d' 不是 'a', 'b', 'c' 其中之一"
